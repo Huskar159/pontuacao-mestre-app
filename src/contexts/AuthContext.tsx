@@ -9,7 +9,7 @@ type AuthContextType = {
   isLoading: boolean;
   signUp: (email: string, password: string) => Promise<{ error: any | null; data: any | null }>;
   signIn: (email: string, password: string) => Promise<{ error: any | null; data: any | null }>;
-  signOut: () => Promise<void>;
+  signOut: () => Promise<{ error: any | null }>;
   updateProfile: (userData: { 
     username?: string, 
     purchased_modules?: string[], 
@@ -418,7 +418,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    return await supabase.auth.signOut();
   };
 
   // Atualiza o perfil do usuário no Supabase ou localmente se houver erro

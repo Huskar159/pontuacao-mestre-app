@@ -84,13 +84,16 @@ const StudyLayout: React.FC<StudyLayoutProps> = ({ children }) => {
       }
       
       // Chamar a função de logout do AuthContext
-      await signOut();
+      const { error } = await signOut();
+
+      if (error) {
+        throw new Error('Falha ao fazer logout no Supabase');
+      }
       
-      // Redirecionar para a página de login e forçar o recarregamento
+      // Apenas redirecionar após o logout ser bem-sucedido
+      console.log('[StudyLayout] Logout no Supabase bem-sucedido. Redirecionando...');
       navigate('/login', { replace: true });
       window.location.reload();
-      
-      console.log('[StudyLayout] Logout concluído com sucesso');
     } catch (error) {
       console.error('[StudyLayout] Erro durante o logout:', error);
       // Mesmo em caso de erro, redirecionar para o login
