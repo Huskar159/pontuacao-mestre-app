@@ -87,17 +87,15 @@ const StudyLayout: React.FC<StudyLayoutProps> = ({ children }) => {
       const { error } = await signOut();
 
       if (error) {
-        throw new Error('Falha ao fazer logout no Supabase');
+        console.error('[StudyLayout] Erro durante o logout:', error);
       }
-      
-      // Apenas redirecionar após o logout ser bem-sucedido
-      console.log('[StudyLayout] Logout no Supabase bem-sucedido. Redirecionando...');
-      navigate('/login', { replace: true });
-      window.location.reload();
+      // Força o redirecionamento e recarregamento da página para garantir
+      // que a sessão do usuário seja completamente limpa no navegador.
+      window.location.href = '/login';
     } catch (error) {
-      console.error('[StudyLayout] Erro durante o logout:', error);
-      // Mesmo em caso de erro, redirecionar para o login
-      navigate('/login', { replace: true });
+      console.error('[StudyLayout] Erro inesperado durante o logout:', error);
+      // Como fallback, também força o redirecionamento.
+      window.location.href = '/login';
     }
   };
   
