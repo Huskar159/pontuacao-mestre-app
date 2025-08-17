@@ -86,8 +86,9 @@ const StudyLayout: React.FC<StudyLayoutProps> = ({ children }) => {
       // Chamar a função de logout do AuthContext
       await signOut();
       
-      // Redirecionar para a página de login
+      // Redirecionar para a página de login e forçar o recarregamento
       navigate('/login', { replace: true });
+      window.location.reload();
       
       console.log('[StudyLayout] Logout concluído com sucesso');
     } catch (error) {
