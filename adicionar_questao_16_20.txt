@@ -1,0 +1,220 @@
+  {
+    id: 7516,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma expressão opcional?',
+    explanation: 'Os parênteses podem ser usados para indicar expressões ou palavras opcionais em um texto.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75076,
+        exercise_id: 7516,
+        option_text: 'Todos os aluno(s) devem apresentar o documento de identidade na entrada.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para indicar a opcionalidade do plural, podendo se referir a um ou mais alunos.'
+      },
+      {
+        id: 75077,
+        exercise_id: 7516,
+        option_text: 'Todos os (alunos) devem apresentar o documento de identidade na entrada.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão sendo usados para isolar a palavra inteira, não apenas o elemento opcional.'
+      },
+      {
+        id: 75078,
+        exercise_id: 7516,
+        option_text: 'Todos os aluno(s devem apresentar o documento de identidade na entrada.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após o "s".'
+      },
+      {
+        id: 75079,
+        exercise_id: 7516,
+        option_text: 'Todos os alunos) devem apresentar o documento de identidade na entrada.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de abertura antes do "s" e não há elemento opcional.'
+      },
+      {
+        id: 75080,
+        exercise_id: 7516,
+        option_text: 'Todos os aluno/s devem apresentar o documento de identidade na entrada.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora a barra possa ser usada para indicar alternativas, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7517,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma informação de local?',
+    explanation: 'Os parênteses podem ser usados para adicionar informações sobre locais que complementam a informação principal.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75081,
+        exercise_id: 7517,
+        option_text: 'A Catedral de Notre-Dame (Paris) foi parcialmente destruída por um incêndio em 2019.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para indicar a localização da Catedral de Notre-Dame.'
+      },
+      {
+        id: 75082,
+        exercise_id: 7517,
+        option_text: 'A Catedral de Notre-Dame(Paris)foi parcialmente destruída por um incêndio em 2019.',
+        is_correct: false,
+        explanation: 'Incorreto! Faltam espaços antes e depois dos parênteses.'
+      },
+      {
+        id: 75083,
+        exercise_id: 7517,
+        option_text: 'A Catedral de (Notre-Dame Paris) foi parcialmente destruída por um incêndio em 2019.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão mal posicionados, separando incorretamente o nome da catedral e sua localização.'
+      },
+      {
+        id: 75084,
+        exercise_id: 7517,
+        option_text: 'A Catedral de Notre-Dame (Paris foi parcialmente destruída por um incêndio em 2019.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após o nome da cidade.'
+      },
+      {
+        id: 75085,
+        exercise_id: 7517,
+        option_text: 'A Catedral de Notre-Dame, Paris, foi parcialmente destruída por um incêndio em 2019.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora as vírgulas possam ser usadas para adicionar informações, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7518,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar o autor de uma citação?',
+    explanation: 'Os parênteses são frequentemente usados para indicar o autor de uma citação.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75086,
+        exercise_id: 7518,
+        option_text: '"A imaginação é mais importante que o conhecimento." (Einstein)',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para indicar o autor da citação após o texto citado.'
+      },
+      {
+        id: 75087,
+        exercise_id: 7518,
+        option_text: '"A imaginação é mais importante que o conhecimento."(Einstein)',
+        is_correct: false,
+        explanation: 'Incorreto! Falta um espaço antes do parêntese de abertura.'
+      },
+      {
+        id: 75088,
+        exercise_id: 7518,
+        option_text: '"A imaginação é mais importante que o conhecimento." (Einstein',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após o nome do autor.'
+      },
+      {
+        id: 75089,
+        exercise_id: 7518,
+        option_text: '(Einstein) "A imaginação é mais importante que o conhecimento."',
+        is_correct: false,
+        explanation: 'Incorreto! O autor deve vir após a citação, não antes.'
+      },
+      {
+        id: 75090,
+        exercise_id: 7518,
+        option_text: '"A imaginação é mais importante que o conhecimento." - Einstein',
+        is_correct: false,
+        explanation: 'Incorreto! Embora o travessão possa ser usado para indicar o autor, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7519,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma idade?',
+    explanation: 'Os parênteses podem ser usados para adicionar informações sobre idades que complementam a informação principal.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75091,
+        exercise_id: 7519,
+        option_text: 'A jovem atleta (apenas 16 anos) conquistou a medalha de ouro nas Olimpíadas.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para destacar a idade da atleta.'
+      },
+      {
+        id: 75092,
+        exercise_id: 7519,
+        option_text: 'A jovem atleta(apenas 16 anos)conquistou a medalha de ouro nas Olimpíadas.',
+        is_correct: false,
+        explanation: 'Incorreto! Faltam espaços antes e depois dos parênteses.'
+      },
+      {
+        id: 75093,
+        exercise_id: 7519,
+        option_text: 'A (jovem atleta apenas 16 anos) conquistou a medalha de ouro nas Olimpíadas.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão mal posicionados, isolando o sujeito juntamente com a informação adicional.'
+      },
+      {
+        id: 75094,
+        exercise_id: 7519,
+        option_text: 'A jovem atleta (apenas 16 anos conquistou a medalha de ouro nas Olimpíadas.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após a informação sobre a idade.'
+      },
+      {
+        id: 75095,
+        exercise_id: 7519,
+        option_text: 'A jovem atleta, apenas 16 anos, conquistou a medalha de ouro nas Olimpíadas.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora as vírgulas possam ser usadas para destacar informações, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7520,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma abreviação?',
+    explanation: 'Os parênteses podem ser usados para indicar a forma abreviada de termos ou expressões após mencioná-los por extenso.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75096,
+        exercise_id: 7520,
+        option_text: 'O Produto Interno Bruto (PIB) do Brasil cresceu no último trimestre.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para introduzir a abreviação após o termo completo.'
+      },
+      {
+        id: 75097,
+        exercise_id: 7520,
+        option_text: 'O Produto Interno Bruto(PIB)do Brasil cresceu no último trimestre.',
+        is_correct: false,
+        explanation: 'Incorreto! Faltam espaços antes e depois dos parênteses.'
+      },
+      {
+        id: 75098,
+        exercise_id: 7520,
+        option_text: 'O (Produto Interno Bruto PIB) do Brasil cresceu no último trimestre.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão mal posicionados, incluindo o termo completo junto com a abreviação.'
+      },
+      {
+        id: 75099,
+        exercise_id: 7520,
+        option_text: 'O Produto Interno Bruto (PIB do Brasil cresceu no último trimestre.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após a abreviação.'
+      },
+      {
+        id: 75100,
+        exercise_id: 7520,
+        option_text: 'O PIB (Produto Interno Bruto) do Brasil cresceu no último trimestre.',
+        is_correct: false,
+        explanation: 'Incorreto! A abreviação deve vir entre parênteses após o termo completo, não o contrário.'
+      }
+    ]
+  }

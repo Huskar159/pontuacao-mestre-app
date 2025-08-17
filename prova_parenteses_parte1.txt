@@ -1,0 +1,442 @@
+// Exercícios da prova final de Parênteses (Questões 1-10)
+export const provaParenteses: Exercise[] = [
+  {
+    id: 7501,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para inserir uma informação adicional?',
+    explanation: 'Os parênteses são usados para inserir informações adicionais ou explicativas que não são essenciais para a compreensão da frase principal.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75001,
+        exercise_id: 7501,
+        option_text: 'O presidente (eleito em outubro do ano passado) anunciou novas medidas econômicas ontem.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para inserir uma informação adicional sobre o presidente.'
+      },
+      {
+        id: 75002,
+        exercise_id: 7501,
+        option_text: 'O presidente eleito (em outubro do ano passado anunciou) novas medidas econômicas ontem.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão separando incorretamente elementos da frase que deveriam permanecer unidos.'
+      },
+      {
+        id: 75003,
+        exercise_id: 7501,
+        option_text: 'O (presidente eleito em outubro do ano passado) anunciou novas medidas econômicas ontem.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão isolando todo o sujeito, não apenas a informação adicional.'
+      },
+      {
+        id: 75004,
+        exercise_id: 7501,
+        option_text: 'O presidente eleito em outubro do ano passado (anunciou novas medidas) econômicas ontem.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão isolando parte do predicado, não uma informação adicional.'
+      },
+      {
+        id: 75005,
+        exercise_id: 7501,
+        option_text: '(O presidente) eleito em outubro do ano passado anunciou novas medidas econômicas ontem.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão isolando apenas parte do sujeito, não uma informação adicional.'
+      }
+    ]
+  },
+  {
+    id: 7502,
+    category_id: 'prova-parenteses',
+    question: 'Qual alternativa utiliza os parênteses corretamente para indicar uma sigla?',
+    explanation: 'Os parênteses são usados para apresentar siglas após o nome completo da entidade ou termo.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75006,
+        exercise_id: 7502,
+        option_text: 'A Organização Mundial da Saúde (OMS) emitiu um alerta sobre a nova doença.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para introduzir a sigla após o nome completo.'
+      },
+      {
+        id: 75007,
+        exercise_id: 7502,
+        option_text: 'A (Organização Mundial da Saúde) OMS emitiu um alerta sobre a nova doença.',
+        is_correct: false,
+        explanation: 'Incorreto! A sigla deveria estar dentro dos parênteses, não fora.'
+      },
+      {
+        id: 75008,
+        exercise_id: 7502,
+        option_text: 'A Organização Mundial da Saúde(OMS)emitiu um alerta sobre a nova doença.',
+        is_correct: false,
+        explanation: 'Incorreto! Faltam espaços antes e depois dos parênteses.'
+      },
+      {
+        id: 75009,
+        exercise_id: 7502,
+        option_text: 'A (OMS) Organização Mundial da Saúde emitiu um alerta sobre a nova doença.',
+        is_correct: false,
+        explanation: 'Incorreto! A sigla deve vir depois do nome completo, não antes.'
+      },
+      {
+        id: 75010,
+        exercise_id: 7502,
+        option_text: 'A Organização Mundial da Saúde - OMS - emitiu um alerta sobre a nova doença.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora o travessão possa ser usado para destacar informações, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7503,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma data?',
+    explanation: 'Os parênteses são frequentemente usados para indicar datas que complementam a informação principal.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75011,
+        exercise_id: 7503,
+        option_text: 'A Declaração Universal dos Direitos Humanos (1948) é um documento marco na história dos direitos humanos.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para indicar o ano da Declaração.'
+      },
+      {
+        id: 75012,
+        exercise_id: 7503,
+        option_text: 'A Declaração (Universal dos Direitos Humanos 1948) é um documento marco na história dos direitos humanos.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão incluindo parte do nome oficial junto com a data.'
+      },
+      {
+        id: 75013,
+        exercise_id: 7503,
+        option_text: 'A Declaração Universal dos Direitos Humanos(1948)é um documento marco na história dos direitos humanos.',
+        is_correct: false,
+        explanation: 'Incorreto! Faltam espaços antes e depois dos parênteses.'
+      },
+      {
+        id: 75014,
+        exercise_id: 7503,
+        option_text: 'A (Declaração Universal dos Direitos Humanos 1948) é um documento marco na história dos direitos humanos.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão isolando todo o sujeito junto com a data.'
+      },
+      {
+        id: 75015,
+        exercise_id: 7503,
+        option_text: 'A Declaração Universal dos Direitos Humanos - 1948 - é um documento marco na história dos direitos humanos.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora o travessão possa ser usado para destacar informações, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7504,
+    category_id: 'prova-parenteses',
+    question: 'Qual alternativa utiliza os parênteses corretamente para fornecer uma tradução?',
+    explanation: 'Os parênteses podem ser usados para fornecer a tradução de uma palavra ou expressão em outro idioma.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75016,
+        exercise_id: 7504,
+        option_text: 'O termo "deadline" (prazo final) é muito utilizado no ambiente corporativo.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para fornecer a tradução do termo estrangeiro.'
+      },
+      {
+        id: 75017,
+        exercise_id: 7504,
+        option_text: 'O termo ("deadline" prazo final) é muito utilizado no ambiente corporativo.',
+        is_correct: false,
+        explanation: 'Incorreto! A tradução deve vir entre parênteses após o termo estrangeiro.'
+      },
+      {
+        id: 75018,
+        exercise_id: 7504,
+        option_text: 'O termo "deadline"(prazo final)é muito utilizado no ambiente corporativo.',
+        is_correct: false,
+        explanation: 'Incorreto! Faltam espaços antes e depois dos parênteses.'
+      },
+      {
+        id: 75019,
+        exercise_id: 7504,
+        option_text: 'O termo ("deadline") prazo final é muito utilizado no ambiente corporativo.',
+        is_correct: false,
+        explanation: 'Incorreto! A tradução deve estar dentro dos parênteses, não o termo estrangeiro.'
+      },
+      {
+        id: 75020,
+        exercise_id: 7504,
+        option_text: 'O termo "deadline" - prazo final - é muito utilizado no ambiente corporativo.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora o travessão possa ser usado para destacar informações, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7505,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma possibilidade alternativa?',
+    explanation: 'Os parênteses podem ser usados para indicar uma possibilidade alternativa ou uma opção.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75021,
+        exercise_id: 7505,
+        option_text: 'O(a) candidato(a) deve apresentar seu documento de identidade no dia da prova.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para indicar a possibilidade de gênero masculino ou feminino.'
+      },
+      {
+        id: 75022,
+        exercise_id: 7505,
+        option_text: 'O (a) candidato (a) deve apresentar seu documento de identidade no dia da prova.',
+        is_correct: false,
+        explanation: 'Incorreto! Não deve haver espaço entre o artigo e a letra entre parênteses.'
+      },
+      {
+        id: 75023,
+        exercise_id: 7505,
+        option_text: 'O(a candidato(a) deve apresentar seu documento de identidade no dia da prova.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após o "O".'
+      },
+      {
+        id: 75024,
+        exercise_id: 7505,
+        option_text: 'O(a candidato)(a) deve apresentar seu documento de identidade no dia da prova.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão mal posicionados, separando incorretamente as palavras.'
+      },
+      {
+        id: 75025,
+        exercise_id: 7505,
+        option_text: 'O/a candidato/a deve apresentar seu documento de identidade no dia da prova.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora a barra possa ser usada para indicar alternativas, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7506,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma citação bibliográfica?',
+    explanation: 'Os parênteses são frequentemente usados em citações bibliográficas para indicar o autor e o ano da publicação.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75026,
+        exercise_id: 7506,
+        option_text: 'Segundo Silva (2020), a educação é um processo contínuo de aprendizagem.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para indicar o ano da publicação após o nome do autor.'
+      },
+      {
+        id: 75027,
+        exercise_id: 7506,
+        option_text: 'Segundo (Silva 2020), a educação é um processo contínuo de aprendizagem.',
+        is_correct: false,
+        explanation: 'Incorreto! O nome do autor não deve estar dentro dos parênteses, apenas o ano.'
+      },
+      {
+        id: 75028,
+        exercise_id: 7506,
+        option_text: 'Segundo Silva(2020), a educação é um processo contínuo de aprendizagem.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta um espaço antes do parêntese de abertura.'
+      },
+      {
+        id: 75029,
+        exercise_id: 7506,
+        option_text: 'Segundo Silva (2020, a educação é um processo contínuo de aprendizagem.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após o ano.'
+      },
+      {
+        id: 75030,
+        exercise_id: 7506,
+        option_text: 'Segundo Silva - 2020 - a educação é um processo contínuo de aprendizagem.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora o travém esteja sendo usado para isolar o ano, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7507,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma equação matemática?',
+    explanation: 'Os parênteses são usados em equações matemáticas para agrupar termos e indicar a ordem das operações.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75031,
+        exercise_id: 7507,
+        option_text: 'O resultado da expressão 2 x (3 + 4) é igual a 14.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para indicar que a soma (3 + 4) deve ser feita antes da multiplicação.'
+      },
+      {
+        id: 75032,
+        exercise_id: 7507,
+        option_text: 'O resultado da expressão 2 x )3 + 4( é igual a 14.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão invertidos.'
+      },
+      {
+        id: 75033,
+        exercise_id: 7507,
+        option_text: 'O resultado da expressão 2 x (3 + 4 é igual a 14.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após o 4.'
+      },
+      {
+        id: 75034,
+        exercise_id: 7507,
+        option_text: 'O resultado da expressão 2 x 3 + 4) é igual a 14.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de abertura antes do 3.'
+      },
+      {
+        id: 75035,
+        exercise_id: 7507,
+        option_text: 'O resultado da expressão 2 x [3 + 4] é igual a 14.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora os colchetes possam ser usados em operações matemáticas, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7508,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma observação do autor?',
+    explanation: 'Os parênteses podem ser usados para inserir observações do autor que complementam o texto principal.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75036,
+        exercise_id: 7508,
+        option_text: 'O novo sistema de ensino (ainda em fase experimental) será implementado nas escolas no próximo ano.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para inserir uma observação do autor sobre o sistema de ensino.'
+      },
+      {
+        id: 75037,
+        exercise_id: 7508,
+        option_text: 'O novo sistema de ensino(ainda em fase experimental)será implementado nas escolas no próximo ano.',
+        is_correct: false,
+        explanation: 'Incorreto! Faltam espaços antes e depois dos parênteses.'
+      },
+      {
+        id: 75038,
+        exercise_id: 7508,
+        option_text: 'O novo sistema de ensino )ainda em fase experimental( será implementado nas escolas no próximo ano.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão invertidos.'
+      },
+      {
+        id: 75039,
+        exercise_id: 7508,
+        option_text: 'O novo sistema de ensino (ainda em fase experimental será implementado nas escolas no próximo ano.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após "experimental".'
+      },
+      {
+        id: 75040,
+        exercise_id: 7508,
+        option_text: 'O novo sistema de ensino - ainda em fase experimental - será implementado nas escolas no próximo ano.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora o travém esteja sendo usado corretamente, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7509,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma explicação?',
+    explanation: 'Os parênteses podem ser usados para inserir explicações que complementam a informação principal.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75041,
+        exercise_id: 7509,
+        option_text: 'Os antibióticos (medicamentos que combatem infecções bacterianas) devem ser usados com prescrição médica.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para inserir uma explicação sobre o que são antibióticos.'
+      },
+      {
+        id: 75042,
+        exercise_id: 7509,
+        option_text: 'Os antibióticos(medicamentos que combatem infecções bacterianas)devem ser usados com prescrição médica.',
+        is_correct: false,
+        explanation: 'Incorreto! Faltam espaços antes e depois dos parênteses.'
+      },
+      {
+        id: 75043,
+        exercise_id: 7509,
+        option_text: 'Os (antibióticos medicamentos que combatem infecções bacterianas) devem ser usados com prescrição médica.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão isolando incorretamente o termo e sua explicação como se fossem uma coisa só.'
+      },
+      {
+        id: 75044,
+        exercise_id: 7509,
+        option_text: 'Os antibióticos (medicamentos que combatem infecções bacterianas devem ser usados com prescrição médica.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após "bacterianas".'
+      },
+      {
+        id: 75045,
+        exercise_id: 7509,
+        option_text: 'Os antibióticos, medicamentos que combatem infecções bacterianas, devem ser usados com prescrição médica.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora as vírgulas estejam sendo usadas corretamente, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7510,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma informação estatística?',
+    explanation: 'Os parênteses são usados para adicionar informações estatísticas que complementam a informação principal.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75046,
+        exercise_id: 7510,
+        option_text: 'A maioria dos brasileiros (cerca de 85%) possui acesso à internet em 2023.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para inserir uma informação estatística que complementa a informação principal.'
+      },
+      {
+        id: 75047,
+        exercise_id: 7510,
+        option_text: 'A maioria dos brasileiros(cerca de 85%)possui acesso à internet em 2023.',
+        is_correct: false,
+        explanation: 'Incorreto! Faltam espaços antes e depois dos parênteses.'
+      },
+      {
+        id: 75048,
+        exercise_id: 7510,
+        option_text: 'A maioria dos brasileiros )cerca de 85%( possui acesso à internet em 2023.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão invertidos.'
+      },
+      {
+        id: 75049,
+        exercise_id: 7510,
+        option_text: 'A maioria dos brasileiros (cerca de 85% possui acesso à internet em 2023.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após "85%".'
+      },
+      {
+        id: 75050,
+        exercise_id: 7510,
+        option_text: 'A maioria dos brasileiros - cerca de 85% - possui acesso à internet em 2023.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora o travém esteja sendo usado corretamente, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },

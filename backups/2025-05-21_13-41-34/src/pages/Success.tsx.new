@@ -1,0 +1,442 @@
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { 
+  BookOpen, ChevronRight, ArrowRight, CheckCircle,
+  Bookmark, BookMarked, Quote, HelpCircle, Lock,
+  Play, MessageSquare, Info, X, PencilRuler, FileText,
+  Trophy, Target
+} from 'lucide-react';
+import StudyLayout from '@/components/StudyLayout';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import ExerciseExplanation from '@/components/ExerciseExplanation';
+
+interface LearningModule {
+  id: number;
+  title: string;
+  description: string;
+  totalExercises: number;
+  completedExercises: number;
+  unlocked: boolean;
+  icon: React.ReactNode;
+  color: string;
+  path: string;
+  badge?: string;
+}
+
+interface PunctuationMark {
+  id: number;
+  name: string;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  color: string;
+  examples: { situation: string; example: string }[];
+}
+
+const Success: React.FC = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  // State for modules and progress
+  const [selectedModule, setSelectedModule] = useState<number | null>(null);
+  
+  // Mock data for modules
+  const modules: LearningModule[] = [
+    {
+      id: 1,
+      title: "Vírgulas",
+      description: "Aprenda a usar vírgulas corretamente",
+      totalExercises: 15,
+      completedExercises: 3,
+      unlocked: true,
+      icon: <MessageSquare className="h-6 w-6" />,
+      color: "bg-brand-blue",
+      path: "/exercises",
+      badge: "NOVO"
+    },
+    {
+      id: 2,
+      title: "Ponto e Vírgula",
+      description: "Domine o uso do ponto e vírgula",
+      totalExercises: 12,
+      completedExercises: 0,
+      unlocked: true,
+      icon: <PencilRuler className="h-6 w-6" />,
+      color: "bg-purple-500",
+      path: "/exercises"
+    },
+    {
+      id: 3,
+      title: "Dois Pontos",
+      description: "Aprenda quando usar os dois pontos",
+      totalExercises: 10,
+      completedExercises: 0,
+      unlocked: true,
+      icon: <Quote className="h-6 w-6" />,
+      color: "bg-indigo-500",
+      path: "/exercises"
+    },
+    {
+      id: 4,
+      title: "Aposto",
+      description: "Como pontuar corretamente o aposto",
+      totalExercises: 8,
+      completedExercises: 0,
+      unlocked: false,
+      icon: <Target className="h-6 w-6" />,
+      color: "bg-emerald-500",
+      path: "/exercises"
+    },
+    {
+      id: 5,
+      title: "Avaliação 1",
+      description: "Teste seus conhecimentos",
+      totalExercises: 10,
+      completedExercises: 0,
+      unlocked: false,
+      icon: <Trophy className="h-6 w-6" />,
+      color: "bg-amber-500",
+      path: "/exercises",
+      badge: "PROVA"
+    }
+  ];
+  
+  // Data for punctuation marks
+  const punctuationMarks: PunctuationMark[] = [
+    {
+      id: 1,
+      name: "virgula",
+      title: "Vírgula (,)",
+      description: "A vírgula indica uma pequena pausa no discurso e tem diversos usos na língua portuguesa.",
+      icon: <MessageSquare className="h-6 w-6" />,
+      color: "bg-brand-blue",
+      examples: [
+        { 
+          situation: "Para separar elementos de uma enumeração", 
+          example: "Comprei pão, leite, ovos e manteiga." 
+        },
+        { 
+          situation: "Para isolar o aposto", 
+          example: "Paulo, o médico da família, fará a cirurgia." 
+        },
+        { 
+          situation: "Para separar adjuntos adverbiais deslocados", 
+          example: "No final do ano, as vendas aumentaram significativamente." 
+        },
+        { 
+          situation: "Para separar orações coordenadas", 
+          example: "Fui ao mercado, comprei frutas e voltei para casa." 
+        },
+      ]
+    },
+    {
+      id: 2,
+      name: "ponto-virgula",
+      title: "Ponto e Vírgula (;)",
+      description: "O ponto e vírgula representa uma pausa maior que a vírgula e menor que o ponto final.",
+      icon: <PencilRuler className="h-6 w-6" />,
+      color: "bg-purple-500",
+      examples: [
+        { 
+          situation: "Para separar orações coordenadas extensas", 
+          example: "Uns foram para a praia; outros preferiram ficar em casa." 
+        },
+        { 
+          situation: "Para separar itens em enumerações complexas", 
+          example: "Art. 1º. São direitos do consumidor: I - proteção à vida; II - educação para o consumo; III - informação adequada." 
+        },
+        { 
+          situation: "Para separar orações com conteúdo relacionado", 
+          example: "Estava cansado; mesmo assim, continuou trabalhando." 
+        },
+      ]
+    },
+    {
+      id: 3,
+      name: "dois-pontos",
+      title: "Dois Pontos (:)",
+      description: "Os dois pontos são utilizados para anunciar algo que virá a seguir.",
+      icon: <Quote className="h-6 w-6" />,
+      color: "bg-indigo-500",
+      examples: [
+        { 
+          situation: "Para introduzir uma enumeração", 
+          example: "Precisamos comprar: frutas, legumes e cereais." 
+        },
+        { 
+          situation: "Para introduzir uma citação", 
+          example: "Como dizia Machado de Assis: \"A vida não é um jogo de xadrez.\"" 
+        },
+        { 
+          situation: "Para introduzir uma explicação", 
+          example: "Só havia uma solução: estudar mais." 
+        },
+      ]
+    },
+    {
+      id: 4,
+      name: "parenteses",
+      title: "Parênteses ( )",
+      description: "Os parênteses são utilizados para inserir informações complementares ou explicativas.",
+      icon: <BookMarked className="h-6 w-6" />,
+      color: "bg-emerald-500",
+      examples: [
+        { 
+          situation: "Para inserir informações adicionais", 
+          example: "A reunião (que durou mais de duas horas) foi muito produtiva." 
+        },
+        { 
+          situation: "Para indicar datas", 
+          example: "Machado de Assis (1839-1908) é um dos maiores escritores brasileiros." 
+        },
+        { 
+          situation: "Para apresentar siglas", 
+          example: "A Organização das Nações Unidas (ONU) foi fundada em 1945." 
+        },
+      ]
+    },
+    {
+      id: 5,
+      name: "aspas",
+      title: "Aspas (\"\")",
+      description: "As aspas são utilizadas para destacar palavras ou expressões em um texto.",
+      icon: <BookOpen className="h-6 w-6" />,
+      color: "bg-amber-500",
+      examples: [
+        { 
+          situation: "Para marcar citações diretas", 
+          example: "O professor disse: \"A prova será na próxima semana.\""
+        },
+        { 
+          situation: "Para destacar palavras estrangeiras", 
+          example: "O \"feedback\" dos clientes foi muito positivo." 
+        },
+        { 
+          situation: "Para indicar ironia ou gírias", 
+          example: "Ele é muito \"esperto\" para perceber o que está acontecendo." 
+        },
+      ]
+    },
+    {
+      id: 6,
+      name: "reticencias",
+      title: "Reticências (...)",
+      description: "As reticências indicam uma suspensão ou interrupção no pensamento.",
+      icon: <FileText className="h-6 w-6" />,
+      color: "bg-pink-500",
+      examples: [
+        { 
+          situation: "Para indicar continuidade", 
+          example: "Se eu pudesse voltar no tempo..." 
+        },
+        { 
+          situation: "Para marcar hesitação", 
+          example: "Bem... não sei se devo contar isso a você." 
+        },
+        { 
+          situation: "Para deixar o pensamento incompleto", 
+          example: "Quem com ferro fere..." 
+        },
+      ]
+    }
+  ];
+  
+  return (
+    <StudyLayout>
+      <div className="max-w-5xl mx-auto">
+        {/* Punctuation Guide */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold">Guia de Pontuação</h2>
+            <p className="text-gray-600">Clique em uma pontuação para ver como usá-la corretamente</p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-4 mb-6">
+            {punctuationMarks.map((mark) => (
+              <Dialog key={mark.id}>
+                <DialogTrigger asChild>
+                  <Card 
+                    className="cursor-pointer hover:shadow-md transition-all hover:-translate-y-1"
+                  >
+                    <CardContent className="p-6">
+                      <div className="flex items-center">
+                        <div className={`${mark.color} text-white rounded-full p-3 mr-4 shadow-md`}>
+                          {mark.icon}
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-bold">{mark.title}</h3>
+                          <p className="text-gray-600 text-sm">{mark.description.substring(0, 80)}...</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[600px]">
+                  <DialogHeader>
+                    <DialogTitle>
+                      <div className="flex items-center gap-2">
+                        <div className={`${mark.color} text-white rounded-full p-2 mr-2 shadow-md inline-flex`}>
+                          {mark.icon}
+                        </div>
+                        {mark.title}
+                      </div>
+                    </DialogTitle>
+                    <DialogDescription>{mark.description}</DialogDescription>
+                  </DialogHeader>
+                  
+                  <div className="mt-4">
+                    <h4 className="font-semibold text-gray-800 mb-3">Quando usar:</h4>
+                    <div className="space-y-4">
+                      {mark.examples.map((ex, index) => (
+                        <div key={index} className="bg-gray-50 p-4 rounded-lg border-l-4 border-brand-blue">
+                          <p className="font-medium mb-1">{ex.situation}</p>
+                          <p className="text-gray-600 italic">Exemplo: {ex.example}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <DialogFooter className="mt-6">
+                    <Link to="/exercises">
+                      <Button>
+                        Praticar Exercícios <Play className="ml-2 h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            ))}
+          </div>
+        </div>
+        
+        {/* Welcome Banner */}
+        <div className="bg-gradient-to-r from-brand-blue to-blue-600 text-white rounded-xl shadow-lg mb-8">
+          <div className="p-6">
+            <h1 className="text-2xl md:text-3xl font-bold mb-4">Bem-vindo ao Pontuação Mestre!</h1>
+            <p className="opacity-90 mb-4">
+              Aqui você vai encontrar exercícios divertidos e interativos para dominar a pontuação em português!
+            </p>
+          </div>
+        </div>
+        
+        {/* Learning Path */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold">Sua Jornada de Aprendizado</h2>
+            <p className="text-gray-600">Siga o caminho para dominar a pontuação</p>
+          </div>
+          
+          <div className="relative">
+            {/* Path connecting modules */}
+            <div className="absolute left-7 top-12 bottom-12 w-1 bg-gray-200 z-0"></div>
+            
+            {/* Modules */}
+            <div className="space-y-6 relative z-10">
+              {modules.map((module, index) => (
+                <Card key={module.id} className={`transition-all ${module.unlocked ? 'opacity-100' : 'opacity-70'}`}>
+                  <CardContent className="p-6">
+                    <div className="md:flex items-center justify-between">
+                      <div className="flex items-center mb-4 md:mb-0">
+                        <div className={`${module.color} text-white rounded-full p-3 mr-4 shadow-md`}>
+                          {module.icon}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h3 className="text-xl font-bold">{module.title}</h3>
+                            {module.badge && (
+                              <Badge variant="outline" className="bg-brand-lightBlue text-brand-blue border-brand-blue">
+                                {module.badge}
+                              </Badge>
+                            )}
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm" 
+                                  className="p-0 h-6 text-gray-500 hover:text-brand-blue hover:bg-transparent"
+                                >
+                                  <Info className="h-4 w-4" />
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent>
+                                <DialogHeader>
+                                  <DialogTitle>Detalhes do Módulo</DialogTitle>
+                                  <DialogDescription>Saiba mais sobre este módulo de aprendizado</DialogDescription>
+                                </DialogHeader>
+                                <div className="py-4">
+                                  <ExerciseExplanation moduleId={module.id} />
+                                </div>
+                                <DialogFooter>
+                                  <Link to="/exercises">
+                                    <Button>
+                                      Começar <Play className="ml-2 h-4 w-4" />
+                                    </Button>
+                                  </Link>
+                                </DialogFooter>
+                              </DialogContent>
+                            </Dialog>
+                          </div>
+                          <p className="text-gray-600">{module.description}</p>
+                          <div className="flex items-center mt-1">
+                            <span className="text-sm font-medium text-gray-700">
+                              {module.completedExercises}/{module.totalExercises} exercícios
+                            </span>
+                            <Progress 
+                              value={(module.completedExercises / module.totalExercises) * 100} 
+                              className="h-2 w-36 ml-2" 
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-4 md:mt-0">
+                        {module.unlocked ? (
+                          <Link to={module.path}>
+                            <Button className="w-full md:w-auto">
+                              {module.completedExercises > 0 ? 'Continuar' : 'Começar'} <Play className="ml-2 h-4 w-4" />
+                            </Button>
+                          </Link>
+                        ) : (
+                          <Button variant="outline" className="w-full md:w-auto" disabled>
+                            <Lock className="mr-2 h-4 w-4" /> Bloqueado
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        {/* Upsell Section */}
+        <div className="bg-gradient-to-r from-brand-blue to-blue-700 text-white rounded-lg shadow-md p-6">
+          <div className="md:flex items-center justify-between">
+            <div>
+              <h3 className="text-xl font-bold mb-2">Pacote Completo de Português</h3>
+              <p className="mb-4">
+                Desbloqueie todos os módulos e avance mais rápido em sua jornada!
+              </p>
+            </div>
+            <div className="md:text-right mt-4 md:mt-0">
+              <div className="text-lg opacity-75 line-through mb-1">De R$ 34</div>
+              <div className="text-2xl font-bold mb-2">Por R$ 20</div>
+              <Button className="bg-white text-brand-blue hover:bg-brand-lightBlue">
+                Adquirir Pacote Completo <ChevronRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </StudyLayout>
+  );
+};
+
+export default Success;

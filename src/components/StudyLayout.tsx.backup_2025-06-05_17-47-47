@@ -1,0 +1,391 @@
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Lock, BookOpen, LogOut, User, FileEdit, Menu, X, Home, BookText } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from "@/lib/utils";
+import { SidebarProvider, Sidebar, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarInset } from '@/components/ui/sidebar';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Separator } from '@/components/ui/separator';
+import { useAuth } from '@/contexts/AuthContext';
+
+interface ModuleInfo {
+  id: string;
+  title: string;
+  description: string;
+  isPurchased: boolean;
+  price: number;
+  path: string;
+}
+
+interface StudyLayoutProps {
+  children: React.ReactNode;
+}
+
+const getModules = (hasPurchasedModule: (id: string) => boolean): ModuleInfo[] => {
+  console.log('[StudyLayout] *** GERANDO MÓDULOS COM PERMISSÕES ATUALIZADAS ***');
+  
+  // Criar os módulos e verificar suas permissões individualmente
+  const pontuacaoAccess = hasPurchasedModule('pontuacao');
+  const palavrasAccess = hasPurchasedModule('palavras-repetitivas');
+  
+  console.log('[StudyLayout] Permissões dos módulos:', {
+    pontuacao: pontuacaoAccess,
+    palavras: palavrasAccess
+  });
+  
+  return [
+    {
+      id: 'pontuacao',
+      title: 'Pontuação Mestre',
+      description: '150+ questões práticas com gabarito comentado',
+      isPurchased: pontuacaoAccess,
+      price: 27,
+      path: '/pontuacao'
+    },
+    {
+      id: 'palavras-repetitivas',
+      title: 'Exercícios para Acabar com as Palavras Repetitivas',
+      description: '80+ exercícios para enriquecer seu vocabulário',
+      isPurchased: palavrasAccess,
+      price: 10,
+      path: '/palavras-repetitivas'
+    }
+  ];
+};
+
+const StudyLayout: React.FC<StudyLayoutProps> = ({ children }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const { user, signOut, hasPurchasedModule, userProfile } = useAuth();
+  const [completedModules, setCompletedModules] = useState<Record<string, number>>({});
+  const [modules, setModules] = useState<ModuleInfo[]>([]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isMobile = useIsMobile();
+
+  useEffect(() => {
+    // Inicializar módulos com as permissões atuais
+    console.log('[StudyLayout] userProfile:', userProfile);
+    const modulesList = getModules(hasPurchasedModule);
+    console.log('[StudyLayout] Modules status:', modulesList.map(m => ({ 
+      id: m.id, 
+      isPurchased: m.isPurchased, 
+      hasPlanAccess: hasPurchasedModule(m.id)
+    })));
+    setModules(modulesList);
+  }, [hasPurchasedModule, userProfile]);
+
+  useEffect(() => {
+    try {
+      const savedCompletions = localStorage.getItem('completedExercises');
+      if (savedCompletions) {
+        const completed = JSON.parse(savedCompletions);
+        const moduleCompletions: Record<string, number> = {};
+        
+        modules.forEach(module => {
+          // Get total exercises for this module
+          const totalExercises = module.id === 'pontuacao' ? 150 : 
+                               module.id === 'palavras-repetitivas' ? 80 :
+                               module.id === 'pleonasmos' ? 60 :
+                               module.id === 'concordancia' ? 120 :
+                               module.id === 'interpretacao-textual' ? 100 : 50;
+                               
+          // Count completed exercises for this module
+          const completedCount = (completed as number[]).filter(id => 
+            id.toString().startsWith(module.id)
+          ).length;
+            
+          // Calculate completion percentage
+          moduleCompletions[module.id] = Math.round((completedCount / totalExercises) * 100);
+        });
+        
+        setCompletedModules(moduleCompletions);
+      }
+    } catch (error) {
+      console.error('Error loading completed exercises:', error);
+    }
+  }, [modules]);
+
+  const handlePurchaseClick = (module: ModuleInfo) => {
+    toast({
+      title: "Confirmação de Compra",
+      description: `Você está adicionando "${module.title}" por R$ ${module.price}.`,
+      action: (
+        <Button 
+          onClick={() => {
+            toast({
+              title: "Módulo Adquirido!",
+              description: `${module.title} foi adicionado ao seu acesso.`,
+              variant: "default",
+            });
+          }} 
+          variant="outline"
+          className="bg-brand-green hover:bg-green-700 text-white"
+        >
+          Confirmar
+        </Button>
+      ),
+    });
+  };
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+  
+  // Fechar o menu mobile quando mudar de página
+  useEffect(() => {
+    if (isMobile) {
+      setMobileMenuOpen(false);
+    }
+  }, [location.pathname, isMobile]);
+  
+  // Função auxiliar para navegar e fechar o menu em dispositivos móveis
+  const handleModuleClick = (module: ModuleInfo) => {
+    if (module.isPurchased) {
+      navigate(module.path);
+    } else {
+      toast({
+        title: "Módulo bloqueado",
+        description: `Este módulo não está disponível no seu plano atual.`,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const navigateAndCloseMenu = (path: string, isPurchased: boolean) => {
+    if (isPurchased) {
+      navigate(path);
+      if (isMobile) {
+        setMobileMenuOpen(false);
+      }
+    } else {
+      toast({
+        title: "Módulo bloqueado",
+        description: `Este módulo não está disponível no seu plano atual.`,
+        variant: "destructive",
+      });
+    }
+  };
+
+  return (
+    <div className={cn("min-h-screen w-full flex flex-col md:flex-row", "relative")}>
+      <SidebarProvider
+        defaultOpen={!isMobile}
+        className={cn(isMobile ? "!pl-0 !ml-0" : "md:flex-1")}
+      >
+        {/* Overlay for mobile menu */}
+        {isMobile && mobileMenuOpen && (
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-40"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+        )}
+
+
+        {/* Wrapper for Mobile Header and Main Content */}
+        <div className={cn(
+          "flex flex-col min-h-0 flex-1",
+          "md:ml-64" // Margin left for desktop to accommodate 16rem sidebar
+        )}>
+          {/* Mobile Header with Menu Button */}
+          {isMobile && (
+            <div className="md:hidden flex items-center justify-between p-4 border-b bg-white sticky top-0 z-30">
+              <Button variant="ghost" size="icon" onClick={toggleMobileMenu}>
+                <Menu className="h-6 w-6" />
+              </Button>
+              <Link to="/" className="text-lg font-semibold">
+                Pontuação Mestra
+              </Link>
+              <div className="w-8"></div> {/* Placeholder to balance the header */}
+            </div>
+          )}
+
+          <main className="flex flex-col flex-1 p-4 md:p-6 lg:p-8 w-full overflow-y-auto items-center">
+            {children}
+          </main>
+        </div>
+
+        {/* Mobile Menu Drawer */}
+        {isMobile && (
+          <div
+            className={cn(
+              "fixed top-0 left-0 h-full bg-white z-50 transition-transform duration-300 ease-in-out shadow-lg",
+              "overflow-y-auto w-72 md:w-80", // Largura do menu mobile
+              mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+            )}
+          >
+            <div className="p-4">
+              <Button variant="ghost" size="icon" onClick={toggleMobileMenu} className="mb-4">
+                <X className="h-6 w-6" />
+              </Button>
+              {/* User Profile Section */}
+              <div className="flex flex-col items-center mb-6">
+                <Avatar className="w-20 h-20 mb-2">
+                  {/* <AvatarImage src="/path-to-user-image.jpg" alt={user?.name} /> */}
+                  <AvatarFallback className="text-2xl">
+                    {user?.name ? user.name.substring(0, 2).toUpperCase() : 'U'}
+                  </AvatarFallback>
+                </Avatar>
+                <p className="font-semibold text-lg">{user?.name || 'Usuário'}</p>
+                <p className="text-sm text-gray-500">{user?.email || 'email@example.com'}</p>
+              </div>
+              <Separator className="my-4" />
+              {/* Navigation Links */}
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link to="/" onClick={() => setMobileMenuOpen(false)}>
+                      <Home className="mr-2 h-5 w-5" />
+                      Início
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>
+                      <User className="mr-2 h-5 w-5" />
+                      Meu Perfil
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+              <Separator className="my-4" />
+              {/* Modules Section */}
+              <SidebarGroup>
+                <SidebarGroupLabel className="text-base font-medium">Módulos do Curso</SidebarGroupLabel>
+                <SidebarMenu className="mt-2">
+                  {modules.map((module) => (
+                    <SidebarMenuItem key={module.id} className="mb-1">
+                      <div className="flex items-center justify-between w-full">
+                        <SidebarMenuButton
+                          asChild
+                          className={cn(
+                            "w-full justify-start text-left",
+                            location.pathname === module.path && "bg-gray-100",
+                            !module.isPurchased && "opacity-70 cursor-not-allowed"
+                          )}
+                          onClick={() => navigateAndCloseMenu(module.path, module.isPurchased)}
+                          disabled={!module.isPurchased}
+                        >
+                          <Link to={module.isPurchased ? module.path : '#'}>
+                            {module.isPurchased ? (
+                              <BookOpen className="mr-2 h-5 w-5 flex-shrink-0" />
+                            ) : (
+                              <Lock className="mr-2 h-5 w-5 flex-shrink-0" />
+                            )}
+                            <span className="truncate">{module.title}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                        {!module.isPurchased && (
+                          <Badge 
+                            variant="destructive"
+                            className="ml-2 text-xs px-1.5 py-0.5"
+                          >
+                            Bloqueado
+                          </Badge>
+                        )}
+                        {module.isPurchased && completedModules[module.id] === 100 && (
+                          <Badge 
+                            variant="secondary" 
+                            className="ml-2 bg-brand-green text-white text-xs px-1.5 py-0.5"
+                          >
+                            Concluído
+                          </Badge>
+                        )}
+                      </div>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroup>
+              <Separator className="my-4" />
+              {/* Logout Button */}
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton onClick={() => { signOut(); setMobileMenuOpen(false); }} className="w-full justify-start text-left text-red-600 hover:bg-red-50 hover:text-red-700">
+                    <LogOut className="mr-2 h-5 w-5" />
+                    Sair
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </div>
+          </div>
+        )}
+
+        {/* Desktop Sidebar */}
+        {!isMobile && (
+          <Sidebar className="border-r hidden md:block w-64">
+            <SidebarContent className="p-4">
+              <div className="flex flex-col items-center mb-6">
+                <Avatar className="w-24 h-24 mb-3">
+                  <AvatarFallback className="text-3xl">
+                    {user?.name ? user.name.substring(0, 2).toUpperCase() : 'U'}
+                  </AvatarFallback>
+                </Avatar>
+                <p className="font-semibold text-xl">{user?.name || 'Usuário'}</p>
+                <p className="text-sm text-gray-500 mb-2">{user?.email || 'email@example.com'}</p>
+                <Button variant="ghost" onClick={signOut} className="text-red-600 hover:bg-red-50 hover:text-red-700 w-full justify-start mt-1 text-sm py-2 px-3 rounded-md">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sair
+                </Button>
+              </div>
+              <Separator className="my-6" />
+              <SidebarGroup>
+                <SidebarGroupLabel className="text-lg font-semibold mb-3">Módulos do Curso</SidebarGroupLabel>
+                <SidebarMenu className="mt-2 space-y-1">
+                  {modules.map((module) => (
+                    <SidebarMenuItem key={module.id}>
+                      <div className="flex items-center justify-between w-full">
+                        <SidebarMenuButton
+                          asChild
+                          className={cn(
+                            "w-full justify-start text-left py-2.5 px-3 rounded-md transition-colors duration-150",
+                            location.pathname === module.path && "bg-primary text-primary-foreground hover:bg-primary/90",
+                            !module.isPurchased && "text-gray-400 cursor-not-allowed hover:bg-gray-50",
+                            module.isPurchased && location.pathname !== module.path && "hover:bg-gray-100"
+                          )}
+                          onClick={() => handleModuleClick(module)}
+                          disabled={!module.isPurchased}
+                        >
+                          <Link to={module.isPurchased ? module.path : '#'}>
+                            {module.isPurchased ? (
+                              <BookOpen className="mr-3 h-5 w-5 flex-shrink-0" />
+                            ) : (
+                              <Lock className="mr-3 h-5 w-5 flex-shrink-0 text-gray-400" />
+                            )}
+                            <span className="truncate">{module.title}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                        {!module.isPurchased && (
+                          <Badge 
+                            variant="outline"
+                            className="ml-2 border-yellow-500 text-yellow-600 text-xs px-1.5 py-0.5"
+                          >
+                            Bloqueado
+                          </Badge>
+                        )}
+                        {module.isPurchased && completedModules[module.id] === 100 ? (
+                          <Badge 
+                            variant="secondary" 
+                            className="ml-2 bg-brand-green text-white text-xs px-1.5 py-0.5"
+                          >
+                            Concluído
+                          </Badge>
+                        ) : null}
+                      </div>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroup>
+            </SidebarContent>
+          </Sidebar>
+        )}
+
+      </SidebarProvider>
+    </div>
+  );
+};
+
+export default StudyLayout;

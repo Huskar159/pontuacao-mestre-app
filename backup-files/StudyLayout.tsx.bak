@@ -1,0 +1,266 @@
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Lock, BookOpen, LogOut, User, FileEdit } from 'lucide-react';
+import { SidebarProvider, Sidebar, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarInset } from '@/components/ui/sidebar';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Separator } from '@/components/ui/separator';
+import { useAuth } from '@/contexts/AuthContext';
+
+interface ModuleInfo {
+  id: string;
+  title: string;
+  description: string;
+  isPurchased: boolean;
+  price: number;
+  path: string;
+}
+
+interface StudyLayoutProps {
+  children: React.ReactNode;
+}
+
+const getModules = (hasPurchasedModule: (id: string) => boolean): ModuleInfo[] => {
+  console.log('[StudyLayout] *** GERANDO MÓDULOS COM PERMISSÕES ATUALIZADAS ***');
+  
+  // Criar os módulos e verificar suas permissões individualmente
+  const pontuacaoAccess = hasPurchasedModule('pontuacao');
+  const interpretacaoAccess = hasPurchasedModule('interpretacao-textual');
+  const palavrasAccess = hasPurchasedModule('palavras-repetitivas');
+  const editorAccess = hasPurchasedModule('editor-textos');
+  
+  console.log('[StudyLayout] Permissões dos módulos:', {
+    pontuacao: pontuacaoAccess,
+    interpretacao: interpretacaoAccess,
+    palavras: palavrasAccess,
+    editor: editorAccess
+  });
+  
+  return [
+    {
+      id: 'pontuacao',
+      title: 'Pontuação Mestre',
+      description: '150+ questões práticas com gabarito comentado',
+      isPurchased: pontuacaoAccess,
+      price: 27,
+      path: '/pontuacao'
+    },
+    {
+      id: 'interpretacao-textual',
+      title: '200 Exercícios de Interpretação Textual',
+      description: 'Exercícios de interpretação de diversos tipos de texto',
+      isPurchased: interpretacaoAccess,
+      price: 12,
+      path: '/interpretacao-textual'
+    },
+    {
+      id: 'palavras-repetitivas',
+      title: 'Exercícios para Acabar com as Palavras Repetitivas',
+      description: '80+ exercícios para enriquecer seu vocabulário',
+      isPurchased: palavrasAccess,
+      price: 10,
+      path: '/palavras-repetitivas'
+    },
+    {
+      id: 'editor-textos',
+      title: 'Editor de Textos com Correção',
+      description: 'Crie textos com correção automática de pontuação',
+      isPurchased: editorAccess,
+      price: 0,
+      path: '/editor-textos'
+    }
+  ];
+};
+
+const StudyLayout: React.FC<StudyLayoutProps> = ({ children }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const { user, signOut, hasPurchasedModule, userProfile } = useAuth();
+  const [completedModules, setCompletedModules] = useState<Record<string, number>>({});
+  const [modules, setModules] = useState<ModuleInfo[]>([]);
+
+  useEffect(() => {
+    // Inicializar módulos com as permissões atuais
+    console.log('[StudyLayout] userProfile:', userProfile);
+    const modulesList = getModules(hasPurchasedModule);
+    console.log('[StudyLayout] Modules status:', modulesList.map(m => ({ 
+      id: m.id, 
+      isPurchased: m.isPurchased, 
+      hasPlanAccess: hasPurchasedModule(m.id)
+    })));
+    setModules(modulesList);
+  }, [hasPurchasedModule, userProfile]);
+
+  useEffect(() => {
+    try {
+      const savedCompletions = localStorage.getItem('completedExercises');
+      if (savedCompletions) {
+        const completed = JSON.parse(savedCompletions);
+        const moduleCompletions: Record<string, number> = {};
+        
+        modules.forEach(module => {
+          // Get total exercises for this module
+          const totalExercises = module.id === 'pontuacao' ? 150 : 
+                               module.id === 'palavras-repetitivas' ? 80 :
+                               module.id === 'pleonasmos' ? 60 :
+                               module.id === 'concordancia' ? 120 :
+                               module.id === 'interpretacao-textual' ? 100 : 50;
+                               
+          // Count completed exercises for this module
+          const completedCount = (completed as number[]).filter(id => 
+            id.toString().startsWith(module.id === 'interpretacao-textual' ? 'interpretacao' : module.id)
+          ).length;
+            
+          // Calculate completion percentage
+          moduleCompletions[module.id] = Math.round((completedCount / totalExercises) * 100);
+        });
+        
+        setCompletedModules(moduleCompletions);
+      }
+    } catch (error) {
+      console.error('Error loading completed exercises:', error);
+    }
+  }, [modules]);
+
+  const handlePurchaseClick = (module: ModuleInfo) => {
+    toast({
+      title: "Confirmação de Compra",
+      description: `Você está adicionando "${module.title}" por R$ ${module.price}.`,
+      action: (
+        <Button 
+          onClick={() => {
+            toast({
+              title: "Módulo Adquirido!",
+              description: `${module.title} foi adicionado ao seu acesso.`,
+              variant: "success",
+            });
+          }} 
+          variant="outline"
+          className="bg-brand-green hover:bg-green-700 text-white"
+        >
+          Confirmar
+        </Button>
+      ),
+    });
+  };
+
+  return (
+    <SidebarProvider>
+      <div className="min-h-screen w-full flex">
+        <Sidebar>
+          <SidebarContent>
+            <div className="pt-6">
+              <div className="p-4">
+                <Link to="/" className="font-bold text-xl text-brand-blue block">Pontuação Mestre</Link>
+                <p className="text-sm text-gray-500 mt-1">Área de Estudo</p>
+              </div>
+              
+              {/* Perfil do Usuário */}
+              <div className="p-4 mb-2">
+                <div className="flex items-center space-x-3">
+                  <Avatar>
+                    <AvatarFallback className="bg-brand-blue text-white">
+                      {user?.email?.charAt(0).toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="overflow-hidden">
+                    <p className="text-sm font-medium truncate">{user?.email}</p>
+                    <p className="text-xs text-gray-500">Aluno</p>
+                  </div>
+                </div>
+                
+                <div className="mt-3">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full flex items-center justify-center text-red-500 hover:text-red-600 hover:bg-red-50"
+                    onClick={() => {
+                      signOut();
+                      navigate('/login');
+                    }}
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sair da conta
+                  </Button>
+                </div>
+              </div>
+              
+              <Separator className="mb-2" />
+            </div>
+            
+            <SidebarGroup>
+              <SidebarGroupLabel>Seus Módulos</SidebarGroupLabel>
+              <SidebarMenu>
+                {modules.map((module) => (
+                  <SidebarMenuItem key={module.id}>
+                    <div className="flex items-center justify-between w-full">
+                      <SidebarMenuButton 
+                        asChild
+                        isActive={location.pathname === module.path}
+                        tooltip={module.isPurchased ? 'Acesso Liberado' : `Adquira por R$${module.price}`}
+                      >
+                        <Link 
+                          to={module.isPurchased ? module.path : '#'}
+                          className={!module.isPurchased ? 'opacity-70' : ''}
+                          onClick={(e) => {
+                            if (!module.isPurchased) {
+                              e.preventDefault();
+                              toast({
+                                title: "Módulo bloqueado",
+                                description: `Este módulo não está disponível no seu plano atual.`,
+                                variant: "destructive",
+                              });
+                            }
+                          }}
+                        >
+                          {module.isPurchased ? (
+                            module.id === 'editor-textos' ? (
+                              <FileEdit className="mr-2" />
+                            ) : (
+                              <BookOpen className="mr-2" />
+                            )
+                          ) : (
+                            <Lock className="mr-2 text-red-500" />
+                          )}
+                          <span>{module.title}</span>
+                          {!module.isPurchased && (
+                            <Badge 
+                              variant="secondary" 
+                              className="ml-2 bg-red-100 text-red-600 border border-red-200"
+                            >
+                              Bloqueado
+                            </Badge>
+                          )}
+                        </Link>
+                      </SidebarMenuButton>
+
+                      {module.isPurchased && completedModules[module.id] === 100 ? (
+                        <Badge 
+                          variant="secondary" 
+                          className="ml-2 bg-brand-green text-white"
+                        >
+                          Concluído
+                        </Badge>
+                      ) : null}
+                    </div>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroup>
+
+            {/* Special Offer removed */}
+          </SidebarContent>
+        </Sidebar>
+        
+        <SidebarInset className="p-6 bg-gray-50">
+          {children}
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
+  );
+};
+
+export default StudyLayout;

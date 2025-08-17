@@ -1,0 +1,44 @@
+INSTRUÇÕES PARA IMPLEMENTAR AS 30 QUESTÕES NA PROVA FINAL DE PARÊNTESES
+
+1. Mantenha as 5 questões existentes (7501 a 7505) que já estão no arquivo
+2. No arquivo parentesesData.ts, localize a última questão atual (id: 7505)
+3. Localize onde termina esta questão (após o último "]" desta questão)
+4. ANTES do "]; final" que fecha o array da prova, adicione uma vírgula após o "}" da última questão
+5. Adicione as questões 6-30 dos arquivos que criei anteriormente:
+   - adicionar_questao_6.txt
+   - adicionar_questao_7_10.txt
+   - adicionar_questao_11_15.txt
+   - adicionar_questao_16_20.txt
+   - adicionar_questao_21_25.txt
+   - adicionar_questao_26_30.txt
+
+Estrutura geral para fazer isso:
+
+1. Abra o arquivo parentesesData.ts
+2. Localize esta parte no final do arquivo (após a última questão 7505):
+```
+    ]
+  }
+];
+```
+
+3. Modifique para ficar assim:
+```
+    ]
+  },
+  {
+    // Conteúdo da questão 6 (copie de adicionar_questao_6.txt)
+  },
+  {
+    // Conteúdo da questão 7 (copie de adicionar_questao_7_10.txt)
+  },
+  ...
+  {
+    // Conteúdo da questão 30 (copie de adicionar_questao_26_30.txt)
+  }
+];
+```
+
+4. Salve o arquivo
+
+Isso adicionará as 25 novas questões à prova final de parênteses, completando as 30 questões necessárias.

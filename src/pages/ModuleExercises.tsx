@@ -1,0 +1,240 @@
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import StudyLayout from '@/components/StudyLayout';
+import { Card, CardContent } from '@/components/ui/card';
+import { ArrowLeft, BookOpen, Award, Target } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/lib/supabase';
+import ExerciseSession from '@/components/exercises/ExerciseSession';
+
+const ModuleExercises: React.FC = () => {
+  const { moduleId } = useParams<{ moduleId: string }>();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { user } = useAuth();
+  const [moduleTitle, setModuleTitle] = useState('Exercícios');
+  const [moduleDescription, setModuleDescription] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [completedModules, setCompletedModules] = useState(0);
+  const [totalModules, setTotalModules] = useState(10); // Por padrão, cada tipo de pontuação tem 10 módulos
+
+  useEffect(() => {
+    // Map moduleId to title and description
+    const moduleInfo: Record<string, {title: string, description: string}> = {
+      'virgula': {
+        title: 'Vírgula - Exercício 1',
+        description: 'Introdução ao uso da vírgula na língua portuguesa.'
+      },
+      'virgula-2': {
+        title: 'Vírgula - Exercício 2',
+        description: 'Usos avançados da vírgula em estruturas coordenadas e termos explicativos.'
+      },
+      'virgula-3': {
+        title: 'Vírgula - Exercício 3',
+        description: 'Uso da vírgula para isolar o aposto e expressões explicativas.'
+      },
+      'virgula-4': {
+        title: 'Vírgula - Exercício 4',
+        description: 'Uso da vírgula em orações coordenadas e intercalações.'
+      },
+      'virgula-5': {
+        title: 'Vírgula - Exercício 5',
+        description: 'Casos especiais do uso da vírgula em diferentes contextos.'
+      },
+      // Módulos de Ponto e Vírgula
+      'ponto-e-virgula': {
+        title: 'Ponto e Vírgula - Exercício 1',
+        description: 'Introdução ao uso do ponto e vírgula na língua portuguesa.'
+      },
+      'ponto-virgula-2': {
+        title: 'Ponto e Vírgula - Exercício 2',
+        description: 'Usos avançados do ponto e vírgula em estruturas coordenadas e termos explicativos.'
+      },
+      'ponto-virgula-3': {
+        title: 'Ponto e Vírgula - Exercício 3',
+        description: 'Uso do ponto e vírgula para separar orações coordenadas extensas.'
+      },
+      'ponto-virgula-4': {
+        title: 'Ponto e Vírgula - Exercício 4',
+        description: 'Uso do ponto e vírgula em enumerações complexas.'
+      },
+      'ponto-virgula-5': {
+        title: 'Ponto e Vírgula - Exercício 5',
+        description: 'Casos especiais do uso do ponto e vírgula em diferentes contextos.'
+      },
+      'prova-ponto-e-virgula': {
+        title: 'Prova Final de Ponto e Vírgula',
+        description: 'Avalie seu conhecimento sobre o uso do ponto e vírgula na língua portuguesa.'
+      },
+      // Módulos de Dois Pontos
+      'dois-pontos': {
+        title: 'Dois Pontos - Exercício 1',
+        description: 'Introdução ao uso dos dois pontos na língua portuguesa.'
+      },
+      'dois-pontos-2': {
+        title: 'Dois Pontos - Exercício 2',
+        description: 'Uso dos dois pontos em enumerações e listagens.'
+      },
+      'dois-pontos-3': {
+        title: 'Dois Pontos - Exercício 3',
+        description: 'Dois pontos antes de citações e falas diretas.'
+      },
+      'dois-pontos-4': {
+        title: 'Dois Pontos - Exercício 4',
+        description: 'Dois pontos em explicações e esclarecimentos.'
+      },
+      'dois-pontos-5': {
+        title: 'Dois Pontos - Exercício 5',
+        description: 'Casos especiais do uso dos dois pontos em diversos contextos.'
+      },
+      'prova-dois-pontos': {
+        title: 'Prova Final de Dois Pontos',
+        description: 'Avalie seu conhecimento sobre o uso dos dois pontos na língua portuguesa.'
+      },
+      // Módulos de Parênteses
+      'parenteses': {
+        title: 'Parênteses - Exercício 1',
+        description: 'Introdução ao uso dos parênteses na língua portuguesa.'
+      },
+      'parenteses-2': {
+        title: 'Parênteses - Exercício 2',
+        description: 'Usos avançados dos parênteses em diferentes estruturas textuais.'
+      },
+      'parenteses-3': {
+        title: 'Parênteses - Exercício 3',
+        description: 'Uso dos parênteses para informações complementares e observações.'
+      },
+      'parenteses-4': {
+        title: 'Parênteses - Exercício 4',
+        description: 'Uso dos parênteses em citações e referências.'
+      },
+      'parenteses-5': {
+        title: 'Parênteses - Exercício 5',
+        description: 'Casos especiais do uso dos parênteses em diversos contextos.'
+      },
+      'prova-parenteses': {
+        title: 'Prova Final de Parênteses',
+        description: 'Avalie seu conhecimento sobre o uso dos parênteses na língua portuguesa.'
+      }
+    };
+    
+    if (moduleId && moduleInfo[moduleId]) {
+      setModuleTitle(moduleInfo[moduleId].title);
+      setModuleDescription(moduleInfo[moduleId].description);
+      document.title = `${moduleInfo[moduleId].title} | Pontuação Mestre`;
+      
+      // Buscar progresso do usuário para este módulo
+      fetchUserProgress();
+    }
+  }, [moduleId, user]);
+  
+  // Buscar o progresso do usuário para este módulo
+  const fetchUserProgress = async () => {
+    if (!user || !moduleId) {
+      setLoading(false);
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('completed_modules')
+        .eq('id', user.id)
+        .single();
+      
+      if (error) {
+        console.error('Erro ao buscar progresso:', error);
+      } else if (data) {
+        // Módulos completados para esta categoria
+        const categoryProgress = data.completed_modules[moduleId] || 0;
+        setCompletedModules(categoryProgress);
+      }
+    } catch (err) {
+      console.error('Erro ao processar progresso:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <StudyLayout>
+      <div className="max-w-4xl mx-auto">
+        <div className="flex items-center mb-6">
+          <Button
+            variant="ghost"
+            onClick={() => {
+              // Verificar se o usuário veio da página /pontuacao
+              if (location.state && location.state.from === 'pontuacao') {
+                navigate('/pontuacao');
+                return;
+              }
+              
+              // Removida navegação para interpretação textual
+              
+              // Verificar se é um exercício de palavras repetitivas
+              if (moduleId && (
+                moduleId === 'substituicao-palavras-comuns' || 
+                moduleId === 'verbos-comuns' || 
+                moduleId === 'conectivos-transicao' || 
+                moduleId === 'expressoes-argumentativas' || 
+                moduleId === 'conclusoes-redacao' ||
+                moduleId === 'palavras-imprecisas' ||
+                moduleId === 'reducao-redundancias' ||
+                moduleId === 'prova-final-palavras-repetitivas'
+              )) {
+                navigate('/palavras-repetitivas-pont');
+                return;
+              }
+              
+              // Verificar se veio da página de palavras repetitivas
+              if (location.state && location.state.from === 'palavras-repetitivas') {
+                navigate('/palavras-repetitivas-pont');
+                return;
+              }
+              
+              // Comportamento padrão - voltar para a página principal
+              navigate('/pontuacao');
+            }}
+            className="mr-2"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" /> Voltar
+          </Button>
+          <h1 className="text-3xl font-bold">{moduleTitle}</h1>
+        </div>
+        
+        <div className="mb-6">
+          <p className="text-gray-600">
+            {moduleDescription}
+          </p>
+        </div>
+
+        <Card>
+          <CardContent className="p-6">
+            {moduleId ? (
+              <ExerciseSession 
+                categoryId={moduleId}
+                maxExercises={moduleId.startsWith('prova-') ? 30 : 10}
+                moduleTitle={moduleTitle}
+              />
+            ) : (
+              <div className="text-center py-8">
+                <p>Módulo não encontrado</p>
+                <Button 
+                  onClick={() => navigate('/interpretacao-textual')}
+                  className="mt-4"
+                >
+                  Voltar para Módulos
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </StudyLayout>
+  );
+};
+
+export default ModuleExercises;

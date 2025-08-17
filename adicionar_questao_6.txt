@@ -1,0 +1,44 @@
+  {
+    id: 7506,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma citação bibliográfica?',
+    explanation: 'Os parênteses são frequentemente usados em citações bibliográficas para indicar o autor e o ano da publicação.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75026,
+        exercise_id: 7506,
+        option_text: 'Segundo Silva (2020), a educação é um processo contínuo de aprendizagem.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para indicar o ano da publicação após o nome do autor.'
+      },
+      {
+        id: 75027,
+        exercise_id: 7506,
+        option_text: 'Segundo (Silva 2020), a educação é um processo contínuo de aprendizagem.',
+        is_correct: false,
+        explanation: 'Incorreto! O nome do autor não deve estar dentro dos parênteses, apenas o ano.'
+      },
+      {
+        id: 75028,
+        exercise_id: 7506,
+        option_text: 'Segundo Silva(2020), a educação é um processo contínuo de aprendizagem.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta um espaço antes do parêntese de abertura.'
+      },
+      {
+        id: 75029,
+        exercise_id: 7506,
+        option_text: 'Segundo Silva (2020, a educação é um processo contínuo de aprendizagem.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após o ano.'
+      },
+      {
+        id: 75030,
+        exercise_id: 7506,
+        option_text: 'Segundo Silva - 2020 - a educação é um processo contínuo de aprendizagem.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora o travém esteja sendo usado para isolar o ano, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  }

@@ -1,0 +1,220 @@
+  {
+    id: 7521,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma informação complementar sobre um valor?',
+    explanation: 'Os parênteses podem ser usados para adicionar informações complementares sobre valores mencionados no texto.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75101,
+        exercise_id: 7521,
+        option_text: 'O projeto custou R$ 2 milhões (aproximadamente US$ 400 mil) e foi finalizado em tempo recorde.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para fornecer uma informação complementar sobre o valor em outra moeda.'
+      },
+      {
+        id: 75102,
+        exercise_id: 7521,
+        option_text: 'O projeto custou R$ 2 milhões(aproximadamente US$ 400 mil)e foi finalizado em tempo recorde.',
+        is_correct: false,
+        explanation: 'Incorreto! Faltam espaços antes e depois dos parênteses.'
+      },
+      {
+        id: 75103,
+        exercise_id: 7521,
+        option_text: 'O projeto custou (R$ 2 milhões aproximadamente US$ 400 mil) e foi finalizado em tempo recorde.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão mal posicionados, incluindo o valor principal junto com a informação complementar.'
+      },
+      {
+        id: 75104,
+        exercise_id: 7521,
+        option_text: 'O projeto custou R$ 2 milhões (aproximadamente US$ 400 mil e foi finalizado em tempo recorde.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após a informação complementar.'
+      },
+      {
+        id: 75105,
+        exercise_id: 7521,
+        option_text: 'O projeto custou R$ 2 milhões - aproximadamente US$ 400 mil - e foi finalizado em tempo recorde.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora o travessão possa ser usado para destacar informações, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7522,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma opinião pessoal do autor?',
+    explanation: 'Os parênteses podem ser usados para inserir opiniões pessoais do autor que não fazem parte direta do texto.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75106,
+        exercise_id: 7522,
+        option_text: 'O filme (que considero uma obra-prima do cinema moderno) recebeu cinco indicações ao Oscar.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para inserir uma opinião pessoal do autor sobre o filme.'
+      },
+      {
+        id: 75107,
+        exercise_id: 7522,
+        option_text: 'O filme(que considero uma obra-prima do cinema moderno)recebeu cinco indicações ao Oscar.',
+        is_correct: false,
+        explanation: 'Incorreto! Faltam espaços antes e depois dos parênteses.'
+      },
+      {
+        id: 75108,
+        exercise_id: 7522,
+        option_text: 'O (filme que considero uma obra-prima do cinema moderno) recebeu cinco indicações ao Oscar.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão mal posicionados, incluindo o sujeito junto com a opinião pessoal.'
+      },
+      {
+        id: 75109,
+        exercise_id: 7522,
+        option_text: 'O filme (que considero uma obra-prima do cinema moderno recebeu cinco indicações ao Oscar.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após a opinião pessoal.'
+      },
+      {
+        id: 75110,
+        exercise_id: 7522,
+        option_text: 'O filme, que considero uma obra-prima do cinema moderno, recebeu cinco indicações ao Oscar.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora as vírgulas possam ser usadas para destacar informações, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7523,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma enumeração?',
+    explanation: 'Os parênteses podem ser usados para conter números ou letras que ordenam uma enumeração.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75111,
+        exercise_id: 7523,
+        option_text: 'Os principais objetivos do projeto são: (1) reduzir custos, (2) aumentar a produtividade e (3) melhorar a qualidade.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para conter os números que ordenam a enumeração.'
+      },
+      {
+        id: 75112,
+        exercise_id: 7523,
+        option_text: 'Os principais objetivos do projeto são: (1 reduzir custos, (2 aumentar a produtividade e (3 melhorar a qualidade.',
+        is_correct: false,
+        explanation: 'Incorreto! Faltam os parênteses de fechamento após cada número.'
+      },
+      {
+        id: 75113,
+        exercise_id: 7523,
+        option_text: 'Os principais objetivos do projeto são: 1) reduzir custos, 2) aumentar a produtividade e 3) melhorar a qualidade.',
+        is_correct: false,
+        explanation: 'Incorreto! Faltam os parênteses de abertura antes de cada número.'
+      },
+      {
+        id: 75114,
+        exercise_id: 7523,
+        option_text: 'Os principais objetivos do projeto são: (1 reduzir custos), (2 aumentar a produtividade) e (3 melhorar a qualidade).',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão mal posicionados, fechando após cada item e não após cada número.'
+      },
+      {
+        id: 75115,
+        exercise_id: 7523,
+        option_text: 'Os principais objetivos do projeto são: 1. reduzir custos, 2. aumentar a produtividade e 3. melhorar a qualidade.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora a numeração com pontos seja válida, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7524,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma remissão?',
+    explanation: 'Os parênteses podem ser usados para fazer remissões a outras partes do texto ou a outras obras.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75116,
+        exercise_id: 7524,
+        option_text: 'Conforme discutido anteriormente (ver capítulo 3), esse tema apresenta diversas nuances.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para fazer uma remissão a outra parte do texto.'
+      },
+      {
+        id: 75117,
+        exercise_id: 7524,
+        option_text: 'Conforme discutido anteriormente(ver capítulo 3), esse tema apresenta diversas nuances.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta um espaço antes do parêntese de abertura.'
+      },
+      {
+        id: 75118,
+        exercise_id: 7524,
+        option_text: 'Conforme discutido anteriormente (ver capítulo 3, esse tema apresenta diversas nuances.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após a remissão.'
+      },
+      {
+        id: 75119,
+        exercise_id: 7524,
+        option_text: 'Conforme (discutido anteriormente ver capítulo 3), esse tema apresenta diversas nuances.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão mal posicionados, incluindo parte do texto principal junto com a remissão.'
+      },
+      {
+        id: 75120,
+        exercise_id: 7524,
+        option_text: 'Conforme discutido anteriormente - ver capítulo 3 - esse tema apresenta diversas nuances.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora o travessão possa ser usado para destacar informações, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7525,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar um resultado?',
+    explanation: 'Os parênteses podem ser usados para indicar resultados ou consequências de ações ou processos.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75121,
+        exercise_id: 7525,
+        option_text: 'A implementação do novo sistema (resultando em uma economia de 30%) foi aprovada pela diretoria.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para indicar o resultado da implementação do novo sistema.'
+      },
+      {
+        id: 75122,
+        exercise_id: 7525,
+        option_text: 'A implementação do novo sistema(resultando em uma economia de 30%)foi aprovada pela diretoria.',
+        is_correct: false,
+        explanation: 'Incorreto! Faltam espaços antes e depois dos parênteses.'
+      },
+      {
+        id: 75123,
+        exercise_id: 7525,
+        option_text: 'A implementação do (novo sistema resultando em uma economia de 30%) foi aprovada pela diretoria.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão mal posicionados, incluindo parte do sujeito junto com o resultado.'
+      },
+      {
+        id: 75124,
+        exercise_id: 7525,
+        option_text: 'A implementação do novo sistema (resultando em uma economia de 30% foi aprovada pela diretoria.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após a informação sobre o resultado.'
+      },
+      {
+        id: 75125,
+        exercise_id: 7525,
+        option_text: 'A implementação do novo sistema, resultando em uma economia de 30%, foi aprovada pela diretoria.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora as vírgulas possam ser usadas para destacar informações, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  }

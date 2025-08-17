@@ -1,0 +1,576 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { supabase } from '@/lib/supabase';
+import { 
+  Card, 
+  CardContent, 
+  CardFooter, 
+  CardHeader, 
+  CardTitle 
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Loader2, AlertCircle, CheckCircle, X, Heart } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { 
+  Exercise, 
+  ExerciseOption, 
+  getExercisesByCategory, 
+  saveUserAnswer, 
+  getExerciseResults
+} from '@/services/exerciseService';
+import AuthModal from '@/components/auth/AuthModal';
+import ExerciseResults from './ExerciseResults';
+
+interface ExerciseSessionProps {
+  categoryId: string;
+  maxExercises?: number;
+}
+
+const ExerciseSession: React.FC<ExerciseSessionProps> = ({ 
+  categoryId,
+  maxExercises = 10
+}) => {
+  const [exercises, setExercises] = React.useState<Exercise[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+  const [currentExerciseIndex, setCurrentExerciseIndex] = React.useState(0);
+  const [selectedOptionId, setSelectedOptionId] = React.useState<number | null>(null);
+  const [isAnswerSubmitted, setIsAnswerSubmitted] = React.useState(false);
+  const [isAnswerCorrect, setIsAnswerCorrect] = React.useState(false);
+  const [lives, setLives] = React.useState(3);
+  const [correctAnswers, setCorrectAnswers] = React.useState(0);
+  const [completedExercises, setCompletedExercises] = React.useState<Exercise[]>([]);
+  const [showResults, setShowResults] = React.useState(false);
+  const [results, setResults] = React.useState<any>(null);
+  const [showAuthModal, setShowAuthModal] = React.useState(false);
+  const [noLivesLeft, setNoLivesLeft] = React.useState(false); // Estado para controlar quando o usuário perdeu todas as vidas
+  
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    const fetchExercises = async () => {
+      try {
+        setLoading(true);
+        const fetchedExercises = await getExercisesByCategory(categoryId);
+        
+        // Para todos os módulos de vírgula e ponto e vírgula, mantemos a ordem original do Supabase (não embaralhamos)
+        // Isso garante que os exercícios sejam exibidos na ordem correta conforme definido no banco de dados
+        if (categoryId === 'virgula' || categoryId === 'virgula-2' || categoryId === 'virgula-3' || 
+            categoryId === 'virgula-4' || categoryId === 'virgula-5' || categoryId === 'prova-virgula' ||
+            categoryId === 'ponto-virgula' || categoryId === 'ponto-virgula-2' || categoryId === 'ponto-virgula-3' ||
+            categoryId === 'ponto-virgula-4' || categoryId === 'ponto-virgula-5' || categoryId === 'prova-ponto-virgula') {
+          
+          // Limitar ao número máximo de exercícios, mas manter a ordem original do Supabase
+          // Para as Provas Finais (número 6), usar todos os 30 exercícios
+          // Porém, embaralhar as opções de resposta para cada exercício
+          const maxExercisesToUse = (categoryId === 'prova-virgula' || categoryId === 'prova-ponto-virgula') ? 30 : maxExercises;
+          const orderedExercisesWithShuffledOptions = fetchedExercises.slice(0, maxExercisesToUse).map(exercise => {
+            // Criar uma cópia do exercício
+            const exerciseCopy = { ...exercise };
+            
+            // Embaralhar as opções de resposta
+            exerciseCopy.options = [...exercise.options].sort(() => 0.5 - Math.random());
+            
+            return exerciseCopy;
+          });
+          
+          // Exibir as perguntas no console para verificar a ordem
+          let moduleName = '';
+          
+          // Módulos de Vírgula
+          if (categoryId === 'virgula') moduleName = 'Vírgula 1';
+          if (categoryId === 'virgula-2') moduleName = 'Vírgula 2';
+          if (categoryId === 'virgula-3') moduleName = 'Vírgula 3';
+          if (categoryId === 'virgula-4') moduleName = 'Vírgula 4';
+          if (categoryId === 'virgula-5') moduleName = 'Vírgula 5';
+          if (categoryId === 'prova-virgula') moduleName = 'Prova Final de Vírgula';
+          
+          // Módulos de Ponto e Vírgula
+          if (categoryId === 'ponto-virgula') moduleName = 'Ponto e Vírgula 1';
+          if (categoryId === 'ponto-virgula-2') moduleName = 'Ponto e Vírgula 2';
+          if (categoryId === 'ponto-virgula-3') moduleName = 'Ponto e Vírgula 3';
+          if (categoryId === 'ponto-virgula-4') moduleName = 'Ponto e Vírgula 4';
+          if (categoryId === 'ponto-virgula-5') moduleName = 'Ponto e Vírgula 5';
+          if (categoryId === 'prova-ponto-virgula') moduleName = 'Prova Final de Ponto e Vírgula';
+          if (categoryId === 'prova-virgula') moduleName = 'Prova Final de Vírgula';
+          console.log(`Perguntas do módulo ${moduleName} em ordem:`, orderedExercisesWithShuffledOptions.map(ex => ({
+            id: ex.id,
+            pergunta: ex.question,
+            opcoes: ex.options.map(opt => ({
+              texto: opt.option_text,
+              correta: opt.is_correct
+            }))
+          })));
+          setExercises(orderedExercisesWithShuffledOptions);
+        } else {
+          // Para outros módulos, embaralhar como antes
+          const shuffled = [...fetchedExercises]
+            .sort(() => 0.5 - Math.random())
+            .slice(0, maxExercises);
+          
+          setExercises(shuffled);
+        }
+        
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching exercises:', err);
+        setError('Não foi possível carregar os exercícios. Por favor, tente novamente.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExercises();
+  }, [categoryId, maxExercises]);
+
+  const currentExercise = exercises[currentExerciseIndex];
+  const progress = exercises.length > 0 
+    ? ((currentExerciseIndex) / exercises.length) * 100 
+    : 0;
+
+  const handleOptionSelect = (optionId: number) => {
+    if (isAnswerSubmitted) return;
+    setSelectedOptionId(optionId);
+  };
+
+  const handleSubmitAnswer = async () => {
+    if (!selectedOptionId || !currentExercise) return;
+    
+    const selectedOption = currentExercise.options.find(opt => opt.id === selectedOptionId);
+    if (!selectedOption) return;
+    
+    const correct = selectedOption.is_correct;
+    setIsAnswerCorrect(correct);
+    setIsAnswerSubmitted(true);
+    
+    // Add to completed exercises
+    setCompletedExercises(prev => [...prev, currentExercise]);
+    
+    // Update correct answers count
+    if (correct) {
+      setCorrectAnswers(prev => prev + 1);
+    } else {
+      // Decrease lives for incorrect answers, exceto na Prova Final de Vírgula
+      if (categoryId !== 'prova-virgula') {
+        const newLives = lives - 1;
+        setLives(newLives);
+        
+        // Verificar se o usuário perdeu todas as vidas
+        if (newLives <= 0) {
+          setNoLivesLeft(true);
+        }
+      }
+    }
+    
+    // Save progress to Supabase if user is logged in
+    if (user) {
+      await saveUserAnswer(user, currentExercise.id, correct);
+    }
+  };
+
+  const handleNextExercise = () => {
+    setSelectedOptionId(null);
+    setIsAnswerSubmitted(false);
+    
+    // Check if session should end
+    if (lives <= 0 || currentExerciseIndex >= exercises.length - 1) {
+      handleEndSession();
+    } else {
+      setCurrentExerciseIndex(prev => prev + 1);
+    }
+  };
+
+  const handleEndSession = async () => {
+    // Determine if this session counts as a completed module (needs at least 70% correct)
+    const completedModuleThreshold = 0.7; // 70%
+    const passedModule = correctAnswers / completedExercises.length >= completedModuleThreshold;
+    
+    // Verificar se o usuário completou todos os exercícios
+    const completedAllExercises = currentExerciseIndex >= exercises.length - 1;
+    
+    // Para a prova final de vírgula, exigir 70% de acerto para passar
+    let passedExercise = completedAllExercises;
+    if (categoryId === 'prova-virgula' && completedAllExercises) {
+      const accuracyPercentage = (correctAnswers / exercises.length) * 100;
+      passedExercise = accuracyPercentage >= 70;
+      console.log('Prova Final de Vírgula - Porcentagem de acerto:', accuracyPercentage.toFixed(2) + '%');
+      console.log('Passou na prova:', passedExercise ? 'SIM' : 'NÃO');
+    }
+    
+    console.log('=== DEBUG ===');
+    console.log('categoryId:', categoryId);
+    console.log('exercises.length:', exercises.length);
+    console.log('correctAnswers:', correctAnswers);
+    console.log('completedExercises.length:', completedExercises.length);
+    console.log('passedModule:', passedModule);
+    console.log('completedAllExercises:', completedAllExercises);
+    console.log('currentExerciseIndex:', currentExerciseIndex);
+    console.log('User logged in:', !!user);
+    
+    if (user) {
+      // >>> Início: Lógica para salvar módulo concluído exclusivamente no Supabase <<<
+      // Marcar como concluído se o usuário completou todos os exercícios
+      // Para a prova final de vírgula, só marcar como concluído se atingir 70% de acerto
+      if (completedAllExercises && (categoryId !== 'prova-virgula' || passedExercise)) {
+        console.log('Tentando salvar o módulo concluído...');
+        
+        // Definir um objeto para armazenar o progresso
+        let currentProgress = {};
+        let newProgress = {};
+        
+        try {
+          // 1. Tentar buscar progresso atual do Supabase
+          const { data: currentProfile, error: fetchError } = await supabase
+            .from('profiles')
+            .select('completed_modules')
+            .eq('id', user.id)
+            .maybeSingle();
+
+          // 2. Preparar novo objeto de progresso
+          currentProgress = currentProfile?.completed_modules || {};
+          
+          // Garantir que estamos salvando o valor correto para marcar como concluído
+          // O módulo é considerado concluído quando completedExercises === totalExercises
+          console.log(`[ExerciseSession] Definindo ${categoryId} como concluído com ${exercises.length} exercícios`);
+          
+          newProgress = {
+            ...currentProgress,
+            [categoryId]: exercises.length // Marca como concluído com o total de exercícios
+          };
+
+          console.log('Progresso atual:', currentProgress);
+          console.log('Novo progresso:', newProgress);
+
+          // 3. Atualizar no Supabase
+          console.log(`[ExerciseSession] Salvando no Supabase: ${JSON.stringify(newProgress)}`);
+          
+          const { error: updateError } = await supabase
+            .from('profiles')
+            .update({ completed_modules: newProgress })
+            .eq('id', user.id);
+
+          if (updateError) {
+            console.error('Erro ao atualizar perfil no Supabase:', updateError);
+            throw updateError; // Forçar o fluxo para o catch
+          }
+          
+          console.log(`[ExerciseSession] Atualização no Supabase bem-sucedida!`);
+
+          console.log(`Módulo ${categoryId} marcado como concluído no Supabase.`);
+        } catch (error) {
+          console.error('Erro ao salvar no Supabase:', error);
+          // Não fazer nada em caso de erro, apenas logar
+        } finally {
+          // Garantir que newProgress tenha o módulo atual marcado como concluído
+          if (!newProgress[categoryId]) {
+            newProgress[categoryId] = exercises.length;
+          }
+          
+          console.log('[ExerciseSession] Disparando evento moduleProgressUpdated com:', {
+            moduleId: categoryId,
+            progress: newProgress
+          });
+          
+          // Disparar evento para atualizar a UI
+          window.dispatchEvent(new CustomEvent('moduleProgressUpdated', {
+            detail: { moduleId: categoryId, progress: newProgress }
+          }));
+        }
+      }
+      // >>> Fim: Lógica para salvar módulo concluído exclusivamente no Supabase <<<
+
+      // Calculate and save results (existing logic)
+      const sessionResults = await getExerciseResults(
+        user,
+        categoryId,
+        completedExercises,
+        correctAnswers,
+        passedModule // Pass whether this counts as a completed module
+      );
+      setResults(sessionResults);
+    } else {
+      // Create basic results for non-logged in users
+      setResults({
+        totalExercises: completedExercises.length,
+        correctAnswers,
+        incorrectAnswers: completedExercises.length - correctAnswers,
+        accuracyPercentage: Math.round((correctAnswers / completedExercises.length) * 100),
+        xpEarned: correctAnswers * 10,
+        moduleCompleted: passedModule,
+        completedExercises
+      });
+    }
+    
+    setShowResults(true);
+  };
+
+  const handleLoginPrompt = () => {
+    setShowAuthModal(true);
+  };
+
+  const handleReturnToModules = () => {
+    navigate('/success');
+  };
+
+  const handleRestartExercise = () => {
+    // Reiniciar o exercício
+    setCurrentExerciseIndex(0);
+    setSelectedOptionId(null);
+    setIsAnswerSubmitted(false);
+    setIsAnswerCorrect(false);
+    setLives(3);
+    setCorrectAnswers(0);
+    setCompletedExercises([]);
+    setShowResults(false);
+    setResults(null);
+    setNoLivesLeft(false);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[300px]">
+        <Loader2 className="h-10 w-10 animate-spin text-brand-blue mb-4" />
+        <p className="text-gray-600">Carregando exercícios...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Alert variant="destructive" className="mb-4">
+        <AlertCircle className="h-4 w-4 mr-2" />
+        <AlertDescription>{error}</AlertDescription>
+      </Alert>
+    );
+  }
+
+  if (showResults) {
+    return (
+      <>
+        <ExerciseResults 
+          results={results} 
+          onContinue={handleReturnToModules}
+          onLoginPrompt={handleLoginPrompt}
+          isLoggedIn={!!user}
+        />
+        
+        {showAuthModal && (
+          <AuthModal 
+            isOpen={showAuthModal}
+            onClose={() => setShowAuthModal(false)}
+            defaultTab="register"
+          />
+        )}
+      </>
+    );
+  }
+
+  if (!currentExercise) {
+    return (
+      <Alert variant="destructive" className="mb-4">
+        <AlertCircle className="h-4 w-4 mr-2" />
+        <AlertDescription>Não foram encontrados exercícios para esta categoria.</AlertDescription>
+      </Alert>
+    );
+  }
+
+  // Se o usuário perdeu todas as vidas, mostrar tela de fim de jogo (exceto na Prova Final de Vírgula)
+  if (noLivesLeft && !showResults && categoryId !== 'prova-virgula') {
+    return (
+      <div className="max-w-3xl mx-auto">
+        <Card className="mb-6 border-t-4 border-t-red-500">
+          <CardContent className="pt-6">
+            <div className="text-center py-8">
+              <div className="flex justify-center mb-4">
+                {[...Array(3)].map((_, i) => (
+                  <Heart key={i} className="h-8 w-8 text-gray-300 mx-1" />
+                ))}
+              </div>
+              <h2 className="text-2xl font-bold mb-4">Você perdeu todas as vidas!</h2>
+              <p className="text-gray-600 mb-6">
+                Você acertou {correctAnswers} de {exercises.length} questões.
+              </p>
+              
+              <div className="flex justify-center gap-4">
+                <Button 
+                  variant="outline" 
+                  onClick={handleReturnToModules}
+                  className="px-6"
+                >
+                  Voltar ao Menu
+                </Button>
+                <Button 
+                  onClick={handleRestartExercise}
+                  className="px-6"
+                >
+                  Refazer Exercício
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-3xl mx-auto">
+      {/* Header with progress */}
+      <div className="mb-6">
+        <div className="flex justify-between items-center mb-2">
+          {categoryId !== 'prova-virgula' && (
+            <div className="flex gap-2">
+              {[...Array(lives)].map((_, i) => (
+                <Heart key={i} className="h-6 w-6 text-red-500 fill-red-500" />
+              ))}
+              {[...Array(3 - lives)].map((_, i) => (
+                <Heart key={i + lives} className="h-6 w-6 text-gray-300" />
+              ))}
+            </div>
+          )}
+          <div className="text-sm font-medium">
+            Questão {currentExerciseIndex + 1} de {exercises.length}
+          </div>
+        </div>
+        <Progress 
+          value={progress} 
+          className="h-2" 
+        />
+      </div>
+      
+      {/* Question */}
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle className="text-xl">{currentExercise.question}</CardTitle>
+        </CardHeader>
+      </Card>
+      
+      {/* Options */}
+      <div className="space-y-3 mb-6">
+        {currentExercise.options.map((option) => (
+          <button
+            key={option.id}
+            className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
+              // Na Prova Final de Vírgula, não mostrar feedback visual
+              categoryId === 'prova-virgula'
+                ? selectedOptionId === option.id 
+                  ? 'border-brand-blue bg-brand-blue/5' 
+                  : 'border-gray-200 hover:border-gray-300'
+                : selectedOptionId === option.id 
+                  ? 'border-brand-blue bg-brand-blue/5' 
+                  : 'border-gray-200 hover:border-gray-300'
+            } ${
+              isAnswerSubmitted && categoryId !== 'prova-virgula' && selectedOptionId === option.id
+                ? option.is_correct 
+                  ? 'border-green-500 bg-green-50' 
+                  : 'border-red-500 bg-red-50'
+                : ''
+            } ${
+              isAnswerSubmitted && categoryId !== 'prova-virgula' && option.is_correct && selectedOptionId !== option.id
+                ? 'border-green-500 bg-green-50'
+                : ''
+            }`}
+            onClick={() => handleOptionSelect(option.id)}
+            disabled={isAnswerSubmitted}
+          >
+            <div className="flex items-center justify-between">
+              <span>{option.option_text}</span>
+              {isAnswerSubmitted && categoryId !== 'prova-virgula' && (
+                <>
+                  {option.is_correct ? (
+                    <CheckCircle className="h-5 w-5 text-green-500" />
+                  ) : (
+                    selectedOptionId === option.id && <X className="h-5 w-5 text-red-500" />
+                  )}
+                </>
+              )}
+            </div>
+          </button>
+        ))}
+      </div>
+      
+      {/* Explanation when answer is submitted - não mostrar na Prova Final de Vírgula */}
+      {isAnswerSubmitted && categoryId !== 'prova-virgula' && (
+        <Card className="mb-6 border-t-4 border-t-brand-blue">
+          <CardContent className="pt-6">
+            <h3 className="font-medium text-lg mb-2">
+              {isAnswerCorrect ? 'Correto!' : 'Ops! Não é bem assim.'}
+            </h3>
+            <p className="text-gray-700">
+              {currentExercise.explanation}
+            </p>
+            {selectedOptionId && (
+              <div className="mt-4 bg-gray-50 p-4 rounded-lg">
+                <p className="text-sm text-gray-600">
+                  {currentExercise.options.find(opt => opt.id === selectedOptionId)?.explanation}
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+      
+      {/* Action buttons */}
+      <div className="flex justify-end">
+        {categoryId === 'prova-virgula' ? (
+          // Na Prova Final de Vírgula, o botão sempre avança para a próxima questão sem mostrar feedback
+          <Button 
+            onClick={() => {
+              if (!selectedOptionId) return;
+              
+              // Registra a resposta internamente mas não mostra feedback
+              const selectedOption = currentExercise.options.find(opt => opt.id === selectedOptionId);
+              if (selectedOption?.is_correct) {
+                setCorrectAnswers(prev => prev + 1);
+              }
+              
+              // Adiciona à lista de exercícios completados
+              setCompletedExercises(prev => [...prev, currentExercise]);
+              
+              // Salva o progresso no Supabase se o usuário estiver logado
+              if (user) {
+                saveUserAnswer(user, currentExercise.id, selectedOption?.is_correct || false);
+              }
+              
+              // Avança para a próxima questão ou mostra resultados
+              if (currentExerciseIndex >= exercises.length - 1) {
+                handleEndSession();
+                setShowResults(true); // Mostrar os resultados finais
+              } else {
+                setCurrentExerciseIndex(prev => prev + 1);
+                setSelectedOptionId(null);
+              }
+            }}
+            disabled={!selectedOptionId}
+            className="min-w-[120px]"
+          >
+            {currentExerciseIndex >= exercises.length - 1 ? 'Finalizar' : 'Próxima'}
+          </Button>
+        ) : (
+          // Para os outros módulos, mantém o comportamento original
+          !isAnswerSubmitted ? (
+            <Button 
+              onClick={handleSubmitAnswer}
+              disabled={!selectedOptionId}
+              className="min-w-[120px]"
+            >
+              Verificar
+            </Button>
+          ) : (
+            <Button 
+              onClick={handleNextExercise}
+              className="min-w-[120px]"
+            >
+              {currentExerciseIndex >= exercises.length - 1 || lives <= 0 ? 'Ver resultados' : 'Continuar'}
+            </Button>
+          )
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default ExerciseSession;

@@ -1,0 +1,220 @@
+  {
+    id: 7506,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma citação bibliográfica?',
+    explanation: 'Os parênteses são frequentemente usados em citações bibliográficas para indicar o autor e o ano da publicação.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75026,
+        exercise_id: 7506,
+        option_text: 'De acordo com Silva (2020), a metodologia proposta apresenta vantagens significativas.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para indicar o ano da publicação após o nome do autor.'
+      },
+      {
+        id: 75027,
+        exercise_id: 7506,
+        option_text: 'De acordo com (Silva 2020), a metodologia proposta apresenta vantagens significativas.',
+        is_correct: false,
+        explanation: 'Incorreto! O nome do autor deve ficar fora dos parênteses quando a citação é indireta.'
+      },
+      {
+        id: 75028,
+        exercise_id: 7506,
+        option_text: 'De acordo com Silva(2020), a metodologia proposta apresenta vantagens significativas.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta um espaço antes do parêntese de abertura.'
+      },
+      {
+        id: 75029,
+        exercise_id: 7506,
+        option_text: 'De acordo com Silva (2020, a metodologia proposta apresenta vantagens significativas.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após o ano.'
+      },
+      {
+        id: 75030,
+        exercise_id: 7506,
+        option_text: 'De acordo com Silva - 2020 - a metodologia proposta apresenta vantagens significativas.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora o travessão possa ser usado para destacar informações, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7507,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma nota de rodapé?',
+    explanation: 'Os parênteses podem ser usados para indicar notas de rodapé ou referências no texto.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75031,
+        exercise_id: 7507,
+        option_text: 'Conforme discutido anteriormente (1), a aplicação dessa teoria apresenta desafios significativos.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para indicar uma nota de rodapé.'
+      },
+      {
+        id: 75032,
+        exercise_id: 7507,
+        option_text: 'Conforme discutido anteriormente(1), a aplicação dessa teoria apresenta desafios significativos.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta um espaço antes do parêntese de abertura.'
+      },
+      {
+        id: 75033,
+        exercise_id: 7507,
+        option_text: 'Conforme discutido anteriormente (1, a aplicação dessa teoria apresenta desafios significativos.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após o número.'
+      },
+      {
+        id: 75034,
+        exercise_id: 7507,
+        option_text: 'Conforme discutido anteriormente )1(, a aplicação dessa teoria apresenta desafios significativos.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão invertidos.'
+      },
+      {
+        id: 75035,
+        exercise_id: 7507,
+        option_text: 'Conforme discutido anteriormente [1], a aplicação dessa teoria apresenta desafios significativos.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora os colchetes possam ser usados em alguns estilos de citação, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7508,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma tradução de expressão estrangeira?',
+    explanation: 'Os parênteses podem ser usados para fornecer a tradução de termos ou expressões estrangeiras.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75036,
+        exercise_id: 7508,
+        option_text: 'O termo "know-how" (conhecimento técnico) é muito utilizado no ambiente empresarial.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para fornecer a tradução do termo estrangeiro.'
+      },
+      {
+        id: 75037,
+        exercise_id: 7508,
+        option_text: 'O termo "know-how"(conhecimento técnico)é muito utilizado no ambiente empresarial.',
+        is_correct: false,
+        explanation: 'Incorreto! Faltam espaços antes e depois dos parênteses.'
+      },
+      {
+        id: 75038,
+        exercise_id: 7508,
+        option_text: 'O termo "know-how" (conhecimento técnico é muito utilizado no ambiente empresarial.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após a tradução.'
+      },
+      {
+        id: 75039,
+        exercise_id: 7508,
+        option_text: 'O termo (know-how) "conhecimento técnico" é muito utilizado no ambiente empresarial.',
+        is_correct: false,
+        explanation: 'Incorreto! A tradução deve estar entre parênteses, não o termo estrangeiro.'
+      },
+      {
+        id: 75040,
+        exercise_id: 7508,
+        option_text: 'O termo "know-how", conhecimento técnico, é muito utilizado no ambiente empresarial.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora as vírgulas possam ser usadas para fornecer explicações, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7509,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar um período histórico?',
+    explanation: 'Os parênteses podem ser usados para indicar períodos históricos ou datas importantes.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75041,
+        exercise_id: 7509,
+        option_text: 'Durante a Idade Média (séculos V a XV), a Igreja Católica exerceu grande influência na Europa.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para indicar o período histórico correspondente à Idade Média.'
+      },
+      {
+        id: 75042,
+        exercise_id: 7509,
+        option_text: 'Durante a Idade Média(séculos V a XV), a Igreja Católica exerceu grande influência na Europa.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta um espaço antes do parêntese de abertura.'
+      },
+      {
+        id: 75043,
+        exercise_id: 7509,
+        option_text: 'Durante a Idade Média (séculos V a XV, a Igreja Católica exerceu grande influência na Europa.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após o período.'
+      },
+      {
+        id: 75044,
+        exercise_id: 7509,
+        option_text: 'Durante a (Idade Média séculos V a XV), a Igreja Católica exerceu grande influência na Europa.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão mal posicionados, separando incorretamente o termo e sua explicação.'
+      },
+      {
+        id: 75045,
+        exercise_id: 7509,
+        option_text: 'Durante a Idade Média - séculos V a XV - a Igreja Católica exerceu grande influência na Europa.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora o travessão possa ser usado para destacar informações, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7510,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar um exemplo?',
+    explanation: 'Os parênteses podem ser usados para introduzir exemplos que ilustram a informação principal.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75046,
+        exercise_id: 7510,
+        option_text: 'Os metais preciosos (ouro, prata, platina) são muito valorizados no mercado internacional.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para fornecer exemplos de metais preciosos.'
+      },
+      {
+        id: 75047,
+        exercise_id: 7510,
+        option_text: 'Os metais preciosos(ouro, prata, platina)são muito valorizados no mercado internacional.',
+        is_correct: false,
+        explanation: 'Incorreto! Faltam espaços antes e depois dos parênteses.'
+      },
+      {
+        id: 75048,
+        exercise_id: 7510,
+        option_text: 'Os metais preciosos (ouro, prata, platina são muito valorizados no mercado internacional.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após os exemplos.'
+      },
+      {
+        id: 75049,
+        exercise_id: 7510,
+        option_text: 'Os (metais preciosos ouro, prata, platina) são muito valorizados no mercado internacional.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão mal posicionados, incluindo o termo geral junto com os exemplos.'
+      },
+      {
+        id: 75050,
+        exercise_id: 7510,
+        option_text: 'Os metais preciosos: ouro, prata, platina, são muito valorizados no mercado internacional.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora os dois-pontos possam ser usados para introduzir exemplos, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  }

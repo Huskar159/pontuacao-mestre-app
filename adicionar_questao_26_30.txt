@@ -1,0 +1,220 @@
+  {
+    id: 7526,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma definição científica?',
+    explanation: 'Os parênteses podem ser usados para apresentar definições ou explicações de termos científicos.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75126,
+        exercise_id: 7526,
+        option_text: 'A fotossíntese (processo pelo qual as plantas convertem luz solar em energia química) é essencial para a vida na Terra.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para fornecer uma definição do termo científico.'
+      },
+      {
+        id: 75127,
+        exercise_id: 7526,
+        option_text: 'A fotossíntese(processo pelo qual as plantas convertem luz solar em energia química)é essencial para a vida na Terra.',
+        is_correct: false,
+        explanation: 'Incorreto! Faltam espaços antes e depois dos parênteses.'
+      },
+      {
+        id: 75128,
+        exercise_id: 7526,
+        option_text: 'A (fotossíntese processo pelo qual as plantas convertem luz solar em energia química) é essencial para a vida na Terra.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão mal posicionados, incluindo o termo junto com sua definição.'
+      },
+      {
+        id: 75129,
+        exercise_id: 7526,
+        option_text: 'A fotossíntese (processo pelo qual as plantas convertem luz solar em energia química é essencial para a vida na Terra.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após a definição.'
+      },
+      {
+        id: 75130,
+        exercise_id: 7526,
+        option_text: 'A fotossíntese, processo pelo qual as plantas convertem luz solar em energia química, é essencial para a vida na Terra.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora as vírgulas possam ser usadas para destacar definições, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7527,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma fonte em referência bibliográfica?',
+    explanation: 'Os parênteses são usados em referências bibliográficas para indicar a editora, o local e o ano de publicação.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75131,
+        exercise_id: 7527,
+        option_text: 'SILVA, João. História do Brasil. São Paulo: Editora Acadêmica (2019).',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para indicar o ano de publicação em uma referência bibliográfica.'
+      },
+      {
+        id: 75132,
+        exercise_id: 7527,
+        option_text: 'SILVA, João. História do Brasil. São Paulo: (Editora Acadêmica 2019).',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão mal posicionados, incluindo a editora junto com o ano.'
+      },
+      {
+        id: 75133,
+        exercise_id: 7527,
+        option_text: 'SILVA, João. (História do Brasil). São Paulo: Editora Acadêmica 2019.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão mal posicionados, isolando o título da obra, não o ano.'
+      },
+      {
+        id: 75134,
+        exercise_id: 7527,
+        option_text: 'SILVA, João. História do Brasil. São Paulo: Editora Acadêmica (2019.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após o ano.'
+      },
+      {
+        id: 75135,
+        exercise_id: 7527,
+        option_text: 'SILVA, João. História do Brasil. São Paulo: Editora Acadêmica - 2019.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora o hífen possa ser usado em alguns estilos de referência, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7528,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar dados complementares?',
+    explanation: 'Os parênteses podem ser usados para adicionar dados complementares que não são essenciais para a compreensão da frase principal.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75136,
+        exercise_id: 7528,
+        option_text: 'O novo estádio (com capacidade para 60 mil espectadores) será inaugurado no próximo mês.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para adicionar um dado complementar sobre a capacidade do estádio.'
+      },
+      {
+        id: 75137,
+        exercise_id: 7528,
+        option_text: 'O novo estádio(com capacidade para 60 mil espectadores)será inaugurado no próximo mês.',
+        is_correct: false,
+        explanation: 'Incorreto! Faltam espaços antes e depois dos parênteses.'
+      },
+      {
+        id: 75138,
+        exercise_id: 7528,
+        option_text: 'O (novo estádio com capacidade para 60 mil espectadores) será inaugurado no próximo mês.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão mal posicionados, incluindo o sujeito junto com a informação complementar.'
+      },
+      {
+        id: 75139,
+        exercise_id: 7528,
+        option_text: 'O novo estádio (com capacidade para 60 mil espectadores será inaugurado no próximo mês.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após a informação complementar.'
+      },
+      {
+        id: 75140,
+        exercise_id: 7528,
+        option_text: 'O novo estádio, com capacidade para 60 mil espectadores, será inaugurado no próximo mês.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora as vírgulas possam ser usadas para destacar informações, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7529,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para indicar uma informação temporal?',
+    explanation: 'Os parênteses podem ser usados para adicionar informações temporais que complementam a informação principal.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75141,
+        exercise_id: 7529,
+        option_text: 'A construção da ponte (iniciada em janeiro deste ano) deve ser concluída até dezembro.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para adicionar uma informação temporal sobre o início da construção.'
+      },
+      {
+        id: 75142,
+        exercise_id: 7529,
+        option_text: 'A construção da ponte(iniciada em janeiro deste ano)deve ser concluída até dezembro.',
+        is_correct: false,
+        explanation: 'Incorreto! Faltam espaços antes e depois dos parênteses.'
+      },
+      {
+        id: 75143,
+        exercise_id: 7529,
+        option_text: 'A (construção da ponte iniciada em janeiro deste ano) deve ser concluída até dezembro.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão mal posicionados, incluindo o sujeito junto com a informação temporal.'
+      },
+      {
+        id: 75144,
+        exercise_id: 7529,
+        option_text: 'A construção da ponte (iniciada em janeiro deste ano deve ser concluída até dezembro.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após a informação temporal.'
+      },
+      {
+        id: 75145,
+        exercise_id: 7529,
+        option_text: 'A construção da ponte - iniciada em janeiro deste ano - deve ser concluída até dezembro.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora o travessão possa ser usado para destacar informações, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  },
+  {
+    id: 7530,
+    category_id: 'prova-parenteses',
+    question: 'Em qual alternativa os parênteses estão sendo usados corretamente para apresentar uma classificação?',
+    explanation: 'Os parênteses podem ser usados para apresentar classificações ou categorias de elementos mencionados no texto.',
+    difficulty: 5,
+    options: [
+      {
+        id: 75146,
+        exercise_id: 7530,
+        option_text: 'A baleia azul (Balaenoptera musculus) é o maior animal existente no planeta Terra.',
+        is_correct: true,
+        explanation: 'Correto! Os parênteses estão sendo usados adequadamente para apresentar a classificação científica da baleia azul.'
+      },
+      {
+        id: 75147,
+        exercise_id: 7530,
+        option_text: 'A baleia azul(Balaenoptera musculus)é o maior animal existente no planeta Terra.',
+        is_correct: false,
+        explanation: 'Incorreto! Faltam espaços antes e depois dos parênteses.'
+      },
+      {
+        id: 75148,
+        exercise_id: 7530,
+        option_text: 'A (baleia azul Balaenoptera musculus) é o maior animal existente no planeta Terra.',
+        is_correct: false,
+        explanation: 'Incorreto! Os parênteses estão mal posicionados, incluindo o nome comum junto com a classificação científica.'
+      },
+      {
+        id: 75149,
+        exercise_id: 7530,
+        option_text: 'A baleia azul (Balaenoptera musculus é o maior animal existente no planeta Terra.',
+        is_correct: false,
+        explanation: 'Incorreto! Falta o parêntese de fechamento após a classificação científica.'
+      },
+      {
+        id: 75150,
+        exercise_id: 7530,
+        option_text: 'A baleia azul - Balaenoptera musculus - é o maior animal existente no planeta Terra.',
+        is_correct: false,
+        explanation: 'Incorreto! Embora o travessão possa ser usado para destacar informações, a questão pede especificamente o uso de parênteses.'
+      }
+    ]
+  }

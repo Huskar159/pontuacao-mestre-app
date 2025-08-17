@@ -1,0 +1,997 @@
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { 
+  BookOpen, ChevronRight, ArrowRight, CheckCircle,
+  Bookmark, BookMarked, Quote, HelpCircle, Lock,
+  Play, MessageSquare, Info, X, PencilRuler, FileText,
+  Trophy, Target
+} from 'lucide-react';
+import StudyLayout from '@/components/StudyLayout';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import ExerciseExplanation from '@/components/ExerciseExplanation';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/lib/supabase';
+
+interface LearningModule {
+  id: string;
+  title: string;
+  description: string;
+  totalExercises: number;
+  completedExercises: number;
+  unlocked: boolean;
+  icon: React.ReactNode;
+  color: string;
+  path: string;
+  badge?: string;
+}
+
+interface PunctuationMark {
+  id: number;
+  name: string;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  color: string;
+  examples: { situation: string; example: string }[];
+}
+
+// Definir a constante modules FORA do componente
+const modules: LearningModule[] = [
+  {
+    id: 'virgula',
+    title: "Vírgula - Exercício 1",
+    description: "Introdução ao uso da vírgula na língua portuguesa.",
+    totalExercises: 10,
+    completedExercises: 0,
+    unlocked: true,
+    icon: <MessageSquare className="h-6 w-6" />,
+    color: "bg-brand-blue",
+    path: "/module/virgula",
+    badge: null
+  },
+  {
+    id: 'virgula-2',
+    title: "Vírgula - Exercício 2",
+    description: "Usos avançados da vírgula em estruturas coordenadas e termos explicativos.",
+    totalExercises: 10,
+    completedExercises: 0,
+    unlocked: true,
+    icon: <MessageSquare className="h-6 w-6" />,
+    color: "bg-brand-blue",
+    path: "/module/virgula-2",
+    badge: null
+  },
+  {
+    id: 'virgula-3',
+    title: "Vírgula - Exercício 3",
+    description: "Uso da vírgula para isolar o aposto e expressões explicativas.",
+    totalExercises: 10,
+    completedExercises: 0,
+    unlocked: true,
+    icon: <MessageSquare className="h-6 w-6" />,
+    color: "bg-brand-blue",
+    path: "/module/virgula-3",
+    badge: null
+  },
+  {
+    id: 'virgula-4',
+    title: "Vírgula - Exercício 4",
+    description: "Uso da vírgula em orações coordenadas e intercalações.",
+    totalExercises: 10,
+    completedExercises: 0,
+    unlocked: true,
+    icon: <MessageSquare className="h-6 w-6" />,
+    color: "bg-brand-blue",
+    path: "/module/virgula-4",
+    badge: null
+  },
+  {
+    id: 'virgula-5',
+    title: "Vírgula - Exercício 5",
+    description: "Casos especiais do uso da vírgula em diferentes contextos.",
+    totalExercises: 10,
+    completedExercises: 0,
+    unlocked: true,
+    icon: <MessageSquare className="h-6 w-6" />,
+    color: "bg-brand-blue",
+    path: "/module/virgula-5",
+    badge: null
+  },
+  {
+    id: 'prova-virgula',
+    title: "Prova Final de Vírgula",
+    description: "Avalie seu conhecimento sobre o uso da vírgula na língua portuguesa.",
+    totalExercises: 30,
+    completedExercises: 0,
+    unlocked: true,
+    icon: <Trophy className="h-6 w-6" />,
+    color: "bg-amber-500",
+    path: "/module/prova-virgula",
+    badge: "PROVA"
+  }
+];
+
+// Definir módulos de ponto e vírgula
+const pontoVirgulaModules: LearningModule[] = [
+  {
+    id: 'ponto-virgula',
+    title: "Ponto e Vírgula - Exercício 1",
+    description: "Introdução ao uso do ponto e vírgula na língua portuguesa.",
+    totalExercises: 10,
+    completedExercises: 0,
+    unlocked: true,
+    icon: <PencilRuler className="h-6 w-6" />,
+    color: "bg-green-600",
+    path: "/module/ponto-virgula",
+    badge: null
+  },
+  {
+    id: 'ponto-virgula-2',
+    title: "Ponto e Vírgula - Exercício 2",
+    description: "Usos avançados do ponto e vírgula em estruturas coordenadas e termos explicativos.",
+    totalExercises: 10,
+    completedExercises: 0,
+    unlocked: true,
+    icon: <PencilRuler className="h-6 w-6" />,
+    color: "bg-green-600",
+    path: "/module/ponto-virgula-2",
+    badge: null
+  },
+  {
+    id: 'ponto-virgula-3',
+    title: "Ponto e Vírgula - Exercício 3",
+    description: "Uso do ponto e vírgula para separar orações coordenadas extensas.",
+    totalExercises: 10,
+    completedExercises: 0,
+    unlocked: true,
+    icon: <PencilRuler className="h-6 w-6" />,
+    color: "bg-green-600",
+    path: "/module/ponto-virgula-3",
+    badge: null
+  },
+  {
+    id: 'ponto-virgula-4',
+    title: "Ponto e Vírgula - Exercício 4",
+    description: "Uso do ponto e vírgula em enumerações complexas.",
+    totalExercises: 10,
+    completedExercises: 0,
+    unlocked: true,
+    icon: <PencilRuler className="h-6 w-6" />,
+    color: "bg-green-600",
+    path: "/module/ponto-virgula-4",
+    badge: null
+  },
+  {
+    id: 'ponto-virgula-5',
+    title: "Ponto e Vírgula - Exercício 5",
+    description: "Casos especiais do uso do ponto e vírgula em diferentes contextos.",
+    totalExercises: 10,
+    completedExercises: 0,
+    unlocked: true,
+    icon: <PencilRuler className="h-6 w-6" />,
+    color: "bg-green-600",
+    path: "/module/ponto-virgula-5",
+    badge: null
+  },
+  {
+    id: 'prova-ponto-virgula',
+    title: "Prova Final de Ponto e Vírgula",
+    description: "Avalie seu conhecimento sobre o uso do ponto e vírgula na língua portuguesa.",
+    totalExercises: 30,
+    completedExercises: 0,
+    unlocked: true,
+    icon: <Trophy className="h-6 w-6" />,
+    color: "bg-amber-500",
+    path: "/module/prova-ponto-virgula",
+    badge: "PROVA"
+  }
+];
+
+// Definir constantes vírgula hardcoded
+const virgulasModules: LearningModule[] = [
+  {
+    id: 'virgula',
+    title: "Vírgula - Exercício 1",
+    description: "Introdução ao uso da vírgula na língua portuguesa.",
+    totalExercises: 10,
+    completedExercises: 0,
+    unlocked: true,
+    icon: <MessageSquare className="h-6 w-6" />,
+    color: "bg-brand-blue",
+    path: "/module/virgula",
+    badge: null
+  },
+  {
+    id: 'virgula-2',
+    title: "Vírgula - Exercício 2",
+    description: "Usos avançados da vírgula em estruturas coordenadas e termos explicativos.",
+    totalExercises: 10,
+    completedExercises: 0,
+    unlocked: true,
+    icon: <MessageSquare className="h-6 w-6" />,
+    color: "bg-brand-blue",
+    path: "/module/virgula-2",
+    badge: null
+  },
+  {
+    id: 'virgula-3',
+    title: "Vírgula - Exercício 3",
+    description: "Uso da vírgula para isolar o aposto e expressões explicativas.",
+    totalExercises: 10,
+    completedExercises: 0,
+    unlocked: true,
+    icon: <MessageSquare className="h-6 w-6" />,
+    color: "bg-brand-blue",
+    path: "/module/virgula-3",
+    badge: null
+  },
+  {
+    id: 'virgula-4',
+    title: "Vírgula - Exercício 4",
+    description: "Uso da vírgula em orações coordenadas e intercalações.",
+    totalExercises: 10,
+    completedExercises: 0,
+    unlocked: true,
+    icon: <MessageSquare className="h-6 w-6" />,
+    color: "bg-brand-blue",
+    path: "/module/virgula-4",
+    badge: null
+  },
+  {
+    id: 'virgula-5',
+    title: "Vírgula - Exercício 5",
+    description: "Casos especiais do uso da vírgula em diferentes contextos.",
+    totalExercises: 10,
+    completedExercises: 0,
+    unlocked: true,
+    icon: <MessageSquare className="h-6 w-6" />,
+    color: "bg-brand-blue",
+    path: "/module/virgula-5",
+    badge: null
+  },
+  {
+    id: 'prova-virgula',
+    title: "Prova Final de Vírgula",
+    description: "Avalie seu conhecimento sobre o uso da vírgula na língua portuguesa.",
+    totalExercises: 30,
+    completedExercises: 0,
+    unlocked: true,
+    icon: <Trophy className="h-6 w-6" />,
+    color: "bg-amber-500",
+    path: "/module/prova-virgula",
+    badge: "PROVA"
+  }
+];
+
+const Success: React.FC = () => {
+  const { user } = useAuth();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  // Estados principais (agora 'modules' está definido no escopo externo)
+  const [loading, setLoading] = useState(true);
+  const [shouldRefreshProgress, setShouldRefreshProgress] = useState(false);
+  const [moduleData, setModuleData] = useState(virgulasModules); // Usar a lista hardcoded
+  const [pontoVirgulaModuleData, setPontoVirgulaModuleData] = useState(pontoVirgulaModules);
+  const [selectedModule, setSelectedModule] = useState<number | null>(null);
+  
+  // Para debug
+  useEffect(() => {
+    console.log("Módulos de vírgula:", moduleData);
+    console.log("Módulos de ponto e vírgula:", pontoVirgulaModuleData);
+  }, [moduleData, pontoVirgulaModuleData]);
+
+  // Function to get progress color based on completion percentage
+  const getProgressColor = (completed: number, total: number) => {
+    const percentage = (completed / total) * 100;
+    if (percentage === 0) return "bg-gray-200";
+    return "bg-gradient-to-r from-green-400 to-brand-blue";
+  };
+
+  // Função para determinar o ícone e cor para módulos de ponto e vírgula
+  const getModuleStyle = (module: LearningModule, isPontoVirgulaSection: boolean = false) => {
+    // Se estamos na seção de ponto e vírgula e não é a prova final
+    if (isPontoVirgulaSection && !module.title.includes('Prova Final')) {
+      return {
+        color: 'bg-green-600',
+        icon: <PencilRuler className="h-6 w-6" />
+      };
+    }
+    // Caso contrário, usar os valores padrão do módulo
+    return {
+      color: module.color,
+      icon: module.icon
+    };
+  };
+
+  // Data for punctuation marks
+  const punctuationMarks: PunctuationMark[] = [
+    {
+      id: 1,
+      name: "virgula",
+      title: "Vírgula (,)",
+      description: "A vírgula indica uma pequena pausa no discurso e tem diversos usos na língua portuguesa.",
+      icon: <MessageSquare className="h-6 w-6" />,
+      color: "bg-brand-blue",
+      examples: [
+        { 
+          situation: "Para separar elementos de uma enumeração", 
+          example: "Comprei pão, leite, ovos e manteiga." 
+        },
+        { 
+          situation: "Para isolar o aposto", 
+          example: "Paulo, o médico da família, fará a cirurgia." 
+        },
+        { 
+          situation: "Para separar adjuntos adverbiais deslocados", 
+          example: "No final do ano, as vendas aumentaram significativamente." 
+        },
+        { 
+          situation: "Para separar orações coordenadas", 
+          example: "Fui ao mercado, comprei frutas e voltei para casa." 
+        },
+      ]
+    },
+    {
+      id: 2,
+      name: "ponto-virgula",
+      title: "Ponto e Vírgula (;)",
+      description: "O ponto e vírgula representa uma pausa maior que a vírgula e menor que o ponto final.",
+      icon: <PencilRuler className="h-6 w-6" />,
+      color: "bg-purple-500",
+      examples: [
+        { 
+          situation: "Para separar orações coordenadas extensas", 
+          example: "Uns foram para a praia; outros preferiram ficar em casa." 
+        },
+        { 
+          situation: "Para separar itens em enumerações complexas", 
+          example: "Art. 1º. São direitos do consumidor: I - proteção à vida; II - educação para o consumo; III - informação adequada." 
+        },
+        { 
+          situation: "Para separar orações com conteúdo relacionado", 
+          example: "Estava cansado; mesmo assim, continuou trabalhando." 
+        },
+      ]
+    },
+    {
+      id: 3,
+      name: "dois-pontos",
+      title: "Dois Pontos (:)",
+      description: "Os dois pontos são utilizados para anunciar algo que virá a seguir.",
+      icon: <Quote className="h-6 w-6" />,
+      color: "bg-indigo-500",
+      examples: [
+        { 
+          situation: "Para introduzir uma enumeração", 
+          example: "Precisamos comprar: frutas, legumes e cereais." 
+        },
+        { 
+          situation: "Para introduzir uma citação", 
+          example: "Como dizia Machado de Assis: \"A vida não é um jogo de xadrez.\"" 
+        },
+        { 
+          situation: "Para introduzir uma explicação", 
+          example: "Só havia uma solução: estudar mais." 
+        },
+      ]
+    },
+    {
+      id: 4,
+      name: "parenteses",
+      title: "Parênteses ( )",
+      description: "Os parênteses são utilizados para inserir informações complementares ou explicativas.",
+      icon: <BookMarked className="h-6 w-6" />,
+      color: "bg-emerald-500",
+      examples: [
+        { 
+          situation: "Para inserir informações adicionais", 
+          example: "A reunião (que durou mais de duas horas) foi muito produtiva." 
+        },
+        { 
+          situation: "Para indicar datas", 
+          example: "Machado de Assis (1839-1908) é um dos maiores escritores brasileiros." 
+        },
+        { 
+          situation: "Para apresentar siglas", 
+          example: "A Organização das Nações Unidas (ONU) foi fundada em 1945." 
+        },
+      ]
+    },
+    {
+      id: 5,
+      name: "aspas",
+      title: "Aspas (\"\")",
+      description: "As aspas são utilizadas para destacar palavras ou expressões em um texto.",
+      icon: <BookOpen className="h-6 w-6" />,
+      color: "bg-amber-500",
+      examples: [
+        { 
+          situation: "Para marcar citações diretas", 
+          example: "O professor disse: \"A prova será na próxima semana.\"" 
+        },
+        { 
+          situation: "Para destacar palavras estrangeiras", 
+          example: "O \"feedback\" dos clientes foi muito positivo." 
+        },
+        { 
+          situation: "Para indicar ironia ou gírias", 
+          example: "Ele é muito \"esperto\" para perceber o que está acontecendo." 
+        },
+      ]
+    },
+    {
+      id: 6,
+      name: "reticencias",
+      title: "Reticências (...)",
+      description: "As reticências indicam uma suspensão ou interrupção no pensamento.",
+      icon: <FileText className="h-6 w-6" />,
+      color: "bg-pink-500",
+      examples: [
+        { 
+          situation: "Para indicar continuidade", 
+          example: "Se eu pudesse voltar no tempo..." 
+        },
+        { 
+          situation: "Para marcar hesitação", 
+          example: "Bem... não sei se devo contar isso a você." 
+        },
+        { 
+          situation: "Para deixar o pensamento incompleto", 
+          example: "Quem com ferro fere..." 
+        },
+      ]
+    }
+  ];
+
+  // Função para buscar o progresso do usuário no Supabase
+  // Função para buscar o progresso do usuário exclusivamente do Supabase
+  const fetchUserProgress = async () => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+    
+    setLoading(true);
+    
+    try {
+      console.log('[Success] Buscando progresso do usuário no Supabase...');
+      
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('completed_modules')
+        .eq('id', user.id)
+        .maybeSingle();
+      
+      if (error) {
+        console.error('[Success] Erro ao buscar do Supabase:', error);
+        throw error;
+      }
+      
+      if (data && data.completed_modules) {
+        const completed = data.completed_modules;
+        console.log('[Success] Dados obtidos do Supabase:', completed);
+        console.log('[Success] Tipo dos dados:', typeof completed);
+        console.log('[Success] Formato JSON:', JSON.stringify(completed));
+        
+        // Atualizar a UI com os dados obtidos do Supabase para módulos de vírgula
+        setModuleData(virgulasModules.map(module => {
+          // Verificar se o módulo existe no objeto completed_modules
+          console.log(`[Success] Verificando módulo ${module.id}:`, completed[module.id]);
+          
+          // Considerar qualquer valor maior que 0 como concluído
+          const completedCount = completed[module.id] || 0;
+          const isCompleted = completedCount > 0;
+          
+          console.log(`[Success] Módulo ${module.id}: valor=${completedCount} - Concluído: ${isCompleted}`);
+          
+          return {
+            ...module,
+            completedExercises: isCompleted ? module.totalExercises : 0 // Se concluído, marcar como todos exercícios feitos
+          };
+        }));
+        
+        // Atualizar também os módulos de ponto e vírgula
+        setPontoVirgulaModuleData(prevModules => {
+          const updatedModules = prevModules.map(module => {
+            // Verificar se o módulo existe no objeto completed_modules
+            console.log(`[Success] Verificando módulo ponto-vírgula ${module.id}:`, completed[module.id]);
+            
+            // Considerar qualquer valor maior que 0 como concluído
+            const completedCount = completed[module.id] || 0;
+            const isCompleted = completedCount > 0;
+            
+            console.log(`[Success] Módulo ${module.id}: valor=${completedCount} - Concluído: ${isCompleted}`);
+            
+            return {
+              ...module,
+              completedExercises: isCompleted ? module.totalExercises : 0 // Se concluído, marcar como todos exercícios feitos
+            };
+          });
+          return updatedModules;
+        });
+      } else {
+        console.log('[Success] Nenhum dado de progresso encontrado no Supabase');
+      }
+    } catch (error) {
+      console.error('[Success] Erro ao processar progresso:', error);
+    } finally {
+      setLoading(false);
+      setShouldRefreshProgress(false);
+    }
+  };
+
+  // Efeito para buscar o progresso quando a página carrega ou quando deve atualizar
+  useEffect(() => {
+    fetchUserProgress();
+  }, [user, shouldRefreshProgress]);
+
+  // Adicionar listener para atualização de progresso
+  useEffect(() => {
+    // Função para ouvir evento personalizado para atualizar o progresso
+    const handleProgressUpdate = (event: any) => {
+      console.log('[Success] Evento moduleProgressUpdated recebido:', event.detail);
+      
+      if (event.detail?.moduleId && event.detail?.progress) {
+        console.log('[Success] Atualizando progresso diretamente com os dados do evento');
+        console.log('[Success] Formato do progresso:', JSON.stringify(event.detail.progress));
+        
+        // Atualizar diretamente o estado com os dados do evento
+        setModuleData(prevModules => {
+          const updatedModules = prevModules.map(module => {
+            if (module.id === event.detail.moduleId) {
+              // Verificar se o módulo existe no objeto progress
+              const moduleValue = event.detail.progress[module.id];
+              console.log(`[Success] Valor do módulo ${module.id} no evento:`, moduleValue);
+              
+              // Considerar qualquer valor maior que 0 como concluído
+              const isCompleted = moduleValue > 0;
+              
+              console.log(`[Success] Atualizando módulo ${module.id}: valor=${moduleValue} - Concluído: ${isCompleted}`);
+              
+              return {
+                ...module,
+                completedExercises: isCompleted ? module.totalExercises : 0 // Se concluído, marcar como todos exercícios feitos
+              };
+            }
+            return module;
+          });
+          return updatedModules;
+        });
+        
+        // Atualizar também os módulos de ponto e vírgula
+        setPontoVirgulaModuleData(prevModules => {
+          const updatedModules = prevModules.map(module => {
+            if (module.id === event.detail.moduleId) {
+              // Verificar se o módulo existe no objeto progress
+              const moduleValue = event.detail.progress[module.id];
+              console.log(`[Success] Valor do módulo ponto-vírgula ${module.id} no evento:`, moduleValue);
+              
+              // Considerar qualquer valor maior que 0 como concluído
+              const isCompleted = moduleValue > 0;
+              
+              console.log(`[Success] Atualizando módulo ${module.id}: valor=${moduleValue} - Concluído: ${isCompleted}`);
+              
+              return {
+                ...module,
+                completedExercises: isCompleted ? module.totalExercises : 0 // Se concluído, marcar como todos exercícios feitos
+              };
+            }
+            return module;
+          });
+          return updatedModules;
+        });
+      } else {
+        console.log('[Success] Evento sem dados válidos, atualizando via Supabase');
+        setShouldRefreshProgress(true);
+      }
+    };
+
+    window.addEventListener('moduleProgressUpdated', handleProgressUpdate);
+
+    return () => {
+      window.removeEventListener('moduleProgressUpdated', handleProgressUpdate);
+    };
+  }, []);
+
+  return (
+    <StudyLayout>
+      <div className="max-w-5xl mx-auto">
+        {/* Welcome Banner */}
+        <div className="bg-gradient-to-r from-brand-blue to-blue-600 text-white rounded-xl shadow-lg mb-8">
+          <div className="p-6">
+            <h1 className="text-2xl md:text-3xl font-bold mb-4">Bem-vindo ao Pontuação Mestre!</h1>
+            <p className="opacity-90 mb-4">
+              Aqui você vai encontrar exercícios divertidos e interativos para dominar a pontuação em português!
+            </p>
+          </div>
+        </div>
+
+        {/* Punctuation Guide */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold">Guia de Pontuação</h2>
+            <p className="text-gray-600">Clique em uma pontuação para ver como usá-la corretamente</p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-4 mb-6">
+            {punctuationMarks.map((mark) => (
+              <Dialog key={mark.id}>
+                <DialogTrigger asChild>
+                  <Card 
+                    className="cursor-pointer hover:shadow-md transition-all hover:-translate-y-1"
+                  >
+                    <CardContent className="p-6">
+                      <div key={mark.id} className="flex items-start space-x-4">
+                        <div className="flex-shrink-0">
+                          <div className={`h-10 w-10 rounded-full flex items-center justify-center ${mark.color} text-white`}>
+                            {mark.icon}
+                          </div>
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-bold">{mark.title}</h3>
+                          <p className="text-gray-600 text-sm">{mark.description.substring(0, 80)}...</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[600px]">
+                  <DialogHeader>
+                    <DialogTitle>
+                      <div className="flex items-center gap-2">
+                        <div className={`${mark.color} text-white rounded-full p-2 mr-2 shadow-md inline-flex`}>
+                          {mark.icon}
+                        </div>
+                        {mark.title}
+                      </div>
+                    </DialogTitle>
+                    <DialogDescription>{mark.description}</DialogDescription>
+                  </DialogHeader>
+                  
+                  <div className="mt-4">
+                    <h4 className="font-semibold text-gray-800 mb-3">Quando usar:</h4>
+                    <div className="space-y-4">
+                      {mark.examples.map((ex, index) => (
+                        <div key={index} className="bg-gray-50 p-4 rounded-lg border-l-4 border-brand-blue">
+                          <p className="font-medium mb-1">{ex.situation}</p>
+                          <p className="text-gray-600 italic">Exemplo: {ex.example}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <DialogFooter className="mt-6">
+                    <Link to="/exercises">
+                      <Button>
+                        Praticar Exercícios <Play className="ml-2 h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            ))}
+          </div>
+        </div>
+        
+        
+        {/* Learning Path */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold">Domínio da Vírgula</h2>
+            <p className="text-gray-600">Siga o caminho para se tornar um mestre no uso da vírgula</p>
+          </div>
+          
+          {/* Módulo Explicativo */}
+          <Card className="mb-6 border-l-4 border-brand-blue">
+            <CardContent className="p-4">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center">
+                  <div className="bg-brand-blue text-white rounded-full p-2 mr-3">
+                    <Info className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium">Sobre o Módulo de Vírgula</h3>
+                    <p className="text-sm text-gray-600">Aprenda quando e como usar a vírgula corretamente</p>
+                  </div>
+                </div>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm" className="text-brand-blue border-brand-blue hover:bg-brand-lightBlue">
+                      Ver Explicação
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[600px]">
+                    <DialogHeader>
+                      <DialogTitle>
+                        <div className="flex items-center gap-2">
+                          <div className="bg-brand-blue text-white rounded-full p-2 mr-2 shadow-md inline-flex">
+                            <MessageSquare className="h-5 w-5" />
+                          </div>
+                          Módulo de Vírgula
+                        </div>
+                      </DialogTitle>
+                      <DialogDescription>Entenda os principais usos da vírgula na língua portuguesa</DialogDescription>
+                    </DialogHeader>
+                    
+                    <div className="mt-4 space-y-4">
+                      <p>A vírgula é um dos sinais de pontuação mais importantes e frequentemente utilizados na língua portuguesa. Seu uso correto é essencial para garantir a clareza e a precisão do texto.</p>
+                      
+                      <div className="bg-gray-50 p-4 rounded-lg border-l-4 border-brand-blue">
+                        <h4 className="font-semibold mb-2">Principais usos da vírgula:</h4>
+                        <ul className="list-disc pl-5 space-y-2">
+                          <li>Separar elementos de uma enumeração</li>
+                          <li>Isolar o vocativo</li>
+                          <li>Isolar o aposto</li>
+                          <li>Separar orações coordenadas</li>
+                          <li>Isolar adjuntos adverbiais deslocados</li>
+                          <li>Separar orações subordinadas adverbiais, especialmente quando antepostas à principal</li>
+                        </ul>
+                      </div>
+                      
+                      <p>Neste módulo, você aprenderá a identificar e aplicar corretamente a vírgula em diferentes contextos, evitando erros comuns como a separação indevida entre sujeito e predicado.</p>
+                    </div>
+                    
+                    <DialogFooter className="mt-6">
+                      <Button onClick={() => document.querySelector('[role="dialog"]')?.querySelector('button[aria-label="Close"]')?.click()}>Entendi</Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <div className="relative">
+            {/* Path connecting modules */}
+            <div className="absolute left-7 top-12 bottom-12 w-1 bg-gray-200 z-0"></div>
+            
+            {/* Modules */}
+            <div className="space-y-6 relative z-10">
+              {moduleData.map((module, index) => (
+                <Card key={module.id} className={`transition-all ${module.unlocked ? 'opacity-100' : 'opacity-70'}`}>
+                  <CardContent className="p-6">
+                    <div className="md:flex items-center justify-between">
+                      <div className="flex items-center mb-4 md:mb-0">
+                        <div className={`${getModuleStyle(module).color} text-white rounded-full p-3 mr-4 shadow-md`}>
+                          {getModuleStyle(module).icon}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h3 className="text-xl font-bold">
+                              <span className="inline-flex items-center justify-center bg-gray-800 text-white text-sm rounded-full w-6 h-6 mr-2">{index + 1}</span>
+                              {module.title}
+                            </h3>
+                            {module.badge && (
+                              <Badge variant="outline" className="bg-brand-lightBlue text-brand-blue border-brand-blue">
+                                {module.badge}
+                              </Badge>
+                            )}
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm" 
+                                  className="p-0 h-6 text-gray-500 hover:text-brand-blue hover:bg-transparent"
+                                >
+                                  <Info className="h-4 w-4" />
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent>
+                                <DialogHeader>
+                                  <DialogTitle>Detalhes do Módulo</DialogTitle>
+                                  <DialogDescription>Saiba mais sobre este módulo de aprendizado</DialogDescription>
+                                </DialogHeader>
+                                <div className="py-4">
+                                  <ExerciseExplanation moduleId={module.id} />
+                                </div>
+                                <DialogFooter>
+                                  <Link to="/exercises">
+                                    <Button>
+                                      Começar <Play className="ml-2 h-4 w-4" />
+                                    </Button>
+                                  </Link>
+                                </DialogFooter>
+                              </DialogContent>
+                            </Dialog>
+                          </div>
+                          <p className="text-gray-600">{module.description}</p>
+                          <div className="flex items-center mt-2">
+                            <Badge variant={module.completedExercises > 0 ? "success" : "secondary"}>
+                              {module.completedExercises > 0 ? (
+                                <><CheckCircle className="mr-1 h-3 w-3" /> Concluído</>
+                              ) : (
+                                'Pendente'
+                              )}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-4 md:mt-0">
+                        {module.unlocked ? (
+                          <Link to={module.path}>
+                            <Button className="w-full md:w-auto">
+                              {module.completedExercises > 0 ? 'Refazer' : 'Começar'} <Play className="ml-2 h-4 w-4" />
+                            </Button>
+                          </Link>
+                        ) : (
+                          <Button variant="outline" className="w-full md:w-auto" disabled>
+                            <Lock className="mr-2 h-4 w-4" /> Bloqueado
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        {/* Seção de exercícios de ponto e vírgula */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold">Domínio do Ponto e Vírgula</h2>
+            <p className="text-gray-600">Siga o caminho para se tornar um mestre no uso do ponto e vírgula</p>
+          </div>
+          
+          {/* Módulo Explicativo */}
+          <Card className="mb-6 border-l-4 border-brand-blue">
+            <CardContent className="p-4">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center">
+                  <div className="bg-brand-blue text-white rounded-full p-2 mr-3">
+                    <Info className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium">Sobre o Módulo de Ponto e Vírgula</h3>
+                    <p className="text-sm text-gray-600">Aprenda quando e como usar o ponto e vírgula corretamente</p>
+                  </div>
+                </div>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm" className="text-brand-blue border-brand-blue hover:bg-brand-lightBlue">
+                      Ver Explicação
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[600px]">
+                    <DialogHeader>
+                      <DialogTitle>
+                        <div className="flex items-center gap-2">
+                          <div className="bg-brand-blue text-white rounded-full p-2 mr-2 shadow-md inline-flex">
+                            <MessageSquare className="h-5 w-5" />
+                          </div>
+                          Módulo de Ponto e Vírgula
+                        </div>
+                      </DialogTitle>
+                      <DialogDescription>Entenda os principais usos do ponto e vírgula na língua portuguesa</DialogDescription>
+                    </DialogHeader>
+                    
+                    <div className="mt-4 space-y-4">
+                      <p>O ponto e vírgula é um sinal de pontuação que representa uma pausa maior que a vírgula e menor que o ponto final. Seu uso correto é essencial para garantir a clareza e a precisão do texto.</p>
+                      
+                      <div className="bg-gray-50 p-4 rounded-lg border-l-4 border-brand-blue">
+                        <h4 className="font-semibold mb-2">Principais usos do ponto e vírgula:</h4>
+                        <ul className="list-disc pl-5 space-y-2">
+                          <li>Separar orações coordenadas extensas</li>
+                          <li>Separar itens em enumerações complexas</li>
+                          <li>Separar orações com conteúdo relacionado</li>
+                          <li>Evitar ambiguidade em frases complexas</li>
+                          <li>Marcar pausas mais longas que a vírgula</li>
+                          <li>Separar considerações de natureza distinta</li>
+                        </ul>
+                      </div>
+                      
+                      <p>Neste módulo, você aprenderá a identificar e aplicar corretamente o ponto e vírgula em diferentes contextos, melhorando a clareza e a coerência dos seus textos.</p>
+                    </div>
+                    
+                    <DialogFooter className="mt-6">
+                      <Button onClick={() => document.querySelector('[role="dialog"]')?.querySelector('button[aria-label="Close"]')?.click()}>Entendi</Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <div className="relative">
+            {/* Path connecting modules */}
+            <div className="absolute left-7 top-12 bottom-12 w-1 bg-gray-200 z-0"></div>
+            
+            {/* Modules */}
+            <div className="space-y-6 relative z-10">
+              {pontoVirgulaModuleData.map((module, index) => (
+                <Card key={`pv-${module.id}`} className={`transition-all ${module.unlocked ? 'opacity-100' : 'opacity-70'}`}>
+                  <CardContent className="p-6">
+                    <div className="md:flex items-center justify-between">
+                      <div className="flex items-center mb-4 md:mb-0">
+                        <div className={`${module.color} text-white rounded-full p-3 mr-4 shadow-md`}>
+                          {module.icon}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h3 className="text-xl font-bold">
+                              <span className="inline-flex items-center justify-center bg-gray-800 text-white text-sm rounded-full w-6 h-6 mr-2">{index + 1}</span>
+                              {module.title}
+                            </h3>
+                            {module.badge && (
+                              <Badge variant="outline" className="bg-brand-lightBlue text-brand-blue border-brand-blue">
+                                {module.badge}
+                              </Badge>
+                            )}
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm" 
+                                  className="p-0 h-6 text-gray-500 hover:text-brand-blue hover:bg-transparent"
+                                >
+                                  <Info className="h-4 w-4" />
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent>
+                                <DialogHeader>
+                                  <DialogTitle>Detalhes do Módulo</DialogTitle>
+                                  <DialogDescription>Saiba mais sobre este módulo de aprendizado</DialogDescription>
+                                </DialogHeader>
+                                <div className="py-4">
+                                  <ExerciseExplanation moduleId={module.id} />
+                                </div>
+                                <DialogFooter>
+                                  <Link to="/exercises">
+                                    <Button>
+                                      Começar <Play className="ml-2 h-4 w-4" />
+                                    </Button>
+                                  </Link>
+                                </DialogFooter>
+                              </DialogContent>
+                            </Dialog>
+                          </div>
+                          <p className="text-gray-600">{module.description}</p>
+                          <div className="flex items-center mt-2">
+                            <Badge variant={module.completedExercises > 0 ? "success" : "secondary"}>
+                              {module.completedExercises > 0 ? (
+                                <><CheckCircle className="mr-1 h-3 w-3" /> Concluído</>
+                              ) : (
+                                'Pendente'
+                              )}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-4 md:mt-0">
+                        {module.unlocked ? (
+                          <Link to={module.path}>
+                            <Button className="w-full md:w-auto">
+                              {module.completedExercises > 0 ? 'Refazer' : 'Começar'} <Play className="ml-2 h-4 w-4" />
+                            </Button>
+                          </Link>
+                        ) : (
+                          <Button variant="outline" className="w-full md:w-auto" disabled>
+                            <Lock className="mr-2 h-4 w-4" /> Bloqueado
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </StudyLayout>
+  );
+};
+
+export default Success;
+
